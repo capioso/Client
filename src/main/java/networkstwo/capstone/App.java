@@ -9,13 +9,14 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
 import static networkstwo.capstone.utils.Screen.changeScreen;
+import static networkstwo.capstone.utils.Screen.showAlert;
 
 public class App extends Application {
     @Override
     public void start(Stage stage) {
         changeScreen(stage, "WelcomePage.fxml");
 
-        ServerConnection serverConnection = new ServerConnection("34.130.54.17", 10852);
+        ServerConnection serverConnection = ServerConnection.getInstance();
 
         CompletableFuture<Boolean> pingFuture = CompletableFuture.supplyAsync(serverConnection::ping);
 
@@ -24,7 +25,8 @@ public class App extends Application {
                 System.out.println("Connected to server");
                 changeScreen(stage, "LogInPage.fxml");
             } else {
-                System.out.println("Could not connect to server");
+                showAlert("Server Error", "Could not connect to server");
+                stage.close();
             }
         })).exceptionally(ex -> {
             Platform.runLater(() -> {
