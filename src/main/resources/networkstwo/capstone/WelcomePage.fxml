@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" stylesheets="@stylesheet/welcomePage.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="networkstwo.capstone.controllers.WelcomePage">
+   <children>
+      <AnchorPane disable="true" layoutX="-51.86322021484375" layoutY="-34.36322021484375" maxHeight="400.0" minHeight="400.0" prefHeight="400.0" prefWidth="616.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="90.14570617675781" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="209.1457061767578" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="331.14569091796875" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="450.14569091796875" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="578.1456909179688" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="87.14570617675781" layoutY="116.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="206.1457061767578" layoutY="116.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="328.14569091796875" layoutY="116.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="447.14569091796875" layoutY="116.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="575.1456909179688" layoutY="116.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="87.14570617675781" layoutY="221.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="206.1457061767578" layoutY="221.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="328.14569091796875" layoutY="221.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="447.14569091796875" layoutY="221.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="575.1456909179688" layoutY="221.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="84.14570617675781" layoutY="312.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="203.1457061767578" layoutY="312.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="325.14569091796875" layoutY="312.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="444.14569091796875" layoutY="312.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+            <ImageView fitHeight="119.0" fitWidth="138.0" layoutX="572.1456909179688" layoutY="312.0" styleClass="rotatedImage">
+               <image>
+                  <Image url="@../../images/ears.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <Text fx:id="titleText" layoutY="-12.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CAPCHAT" textAlignment="CENTER" wrappingWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="150.0">
+         <font>
+            <Font size="64.0" />
+         </font>
+      </Text>
+      <Text fx:id="messageText" layoutY="-13.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A BETTER WAY TO COMMUNICATE" textAlignment="CENTER" wrappingWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="350.0">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>
