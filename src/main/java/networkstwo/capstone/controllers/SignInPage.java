@@ -43,4 +43,8 @@ public class SignInPage {
         Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/IrishGrover-Regular.ttf"), 30);
         title.setFont(titleFont);
     }
+
+    boolean checkUsername(String username) {
+        return true;
+    }
 }
