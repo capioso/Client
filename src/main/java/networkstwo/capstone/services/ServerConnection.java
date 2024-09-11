@@ -1,16 +1,18 @@
 package networkstwo.capstone.services;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.*;
 import java.net.Socket;
+import java.security.KeyStore;
 
 public class ServerConnection {
     private static ServerConnection instance;
     private final String host;
     private final int port;
-    private Socket socket;
+    private SSLSocket socket;
     private PrintWriter out;
     private BufferedReader in;
 
@@ -28,11 +30,27 @@ public class ServerConnection {
 
     public boolean ping() {
         try {
-            socket = new Socket(host, port);
+            String trustStorePath = "clienttruststore.jks";
+            String trustStorePassword = "J~aBG6vCQ059";
+
+            KeyStore trustStore = KeyStore.getInstance("JKS");
+            try (FileInputStream trustStoreInput = new FileInputStream(trustStorePath)) {
+                trustStore.load(trustStoreInput, trustStorePassword.toCharArray());
+            }
+
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManagerFactory.init(trustStore);
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustManagerFactory.getTrustManagers(), null);
+
+            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            socket = (SSLSocket) sslSocketFactory.createSocket(host, port);
             this.out = new PrintWriter(socket.getOutputStream(), true);
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return false;
         }
