@@ -2,6 +2,7 @@ package networkstwo.capstone;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import networkstwo.capstone.services.ServerConnection;
 
@@ -25,7 +26,7 @@ public class App extends Application {
                 System.out.println("Connected to server");
                 changeScreen(stage, "LogInPage.fxml");
             } else {
-                showAlert("Server Error", "Could not connect to server");
+                showAlert(Alert.AlertType.INFORMATION,"Server Error", "Could not connect to server");
                 stage.close();
             }
         })).exceptionally(ex -> {

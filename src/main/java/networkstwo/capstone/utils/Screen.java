@@ -43,8 +43,8 @@ public class Screen {
         }
     }
 
-    public static void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    public static void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
         alert.setTitle("Information");
         alert.setHeaderText(title);
         alert.setContentText(content);

@@ -1,6 +1,8 @@
 package networkstwo.capstone.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
@@ -11,10 +13,11 @@ import networkstwo.capstone.services.ResponseServer;
 import networkstwo.capstone.utils.Validator;
 
 import static networkstwo.capstone.utils.Screen.changeScreen;
+import static networkstwo.capstone.utils.Screen.showAlert;
 
 public class LogInPage {
     @FXML
-    private TextField passwordBox;
+    private PasswordField passwordBox;
 
     @FXML
     private Text title;
@@ -39,13 +42,14 @@ public class LogInPage {
                 logInMessage.setUsername(username);
                 logInMessage.setPassword(password);
                 String response = ResponseServer.getResponse(logInMessage);
-                System.out.println("Server response: " + response);
-                System.out.println("WELCOME");
+                showAlert(Alert.AlertType.INFORMATION, "Server Response", response);
             }else {
                 throw new Exception("Bad Username or Password");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error while login user", e.getMessage());
+            usernameBox.setText("");
+            passwordBox.setText("");
         }
     }
 

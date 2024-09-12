@@ -1,6 +1,8 @@
 package networkstwo.capstone.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
@@ -11,13 +13,14 @@ import networkstwo.capstone.services.ResponseServer;
 import networkstwo.capstone.utils.Validator;
 
 import static networkstwo.capstone.utils.Screen.changeScreen;
+import static networkstwo.capstone.utils.Screen.showAlert;
 
 public class SignInPage {
     @FXML
     private TextField emailBox;
 
     @FXML
-    private TextField passwordBox;
+    private PasswordField passwordBox;
 
     @FXML
     private TextField usernameBox;
@@ -44,12 +47,17 @@ public class SignInPage {
                 signInMessage.setUsername(username);
                 signInMessage.setPassword(password);
                 String response = ResponseServer.getResponse(signInMessage);
-                System.out.println("Server response: " + response);
+                showAlert(Alert.AlertType.INFORMATION, "Server response", response);
                 Stage stage = (Stage) title.getScene().getWindow();
                 changeScreen(stage, "LogInPage.fxml");
+            }else{
+                throw new Exception("Invalid username or password or email.");
             }
         }catch (Exception e) {
-            System.out.println(e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error while creating user", e.getMessage());
+            usernameBox.setText("");
+            emailBox.setText("");
+            passwordBox.setText("");
         }
     }
 
