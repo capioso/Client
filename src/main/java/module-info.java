@@ -2,6 +2,7 @@ module networkstwo.capstone {
     requires javafx.controls;
     requires javafx.fxml;
     requires com.fasterxml.jackson.databind;
+    requires jakarta.validation;
 
 
     opens networkstwo.capstone to javafx.fxml;

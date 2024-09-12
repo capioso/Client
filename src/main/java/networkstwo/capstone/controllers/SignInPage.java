@@ -6,9 +6,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import networkstwo.capstone.messages.SignInUser;
+import networkstwo.capstone.services.ResponseServer;
+import networkstwo.capstone.utils.Validator;
 
 import static networkstwo.capstone.utils.Screen.changeScreen;
-import static networkstwo.capstone.utils.Screen.showAlert;
 
 public class SignInPage {
     @FXML
@@ -31,20 +33,29 @@ public class SignInPage {
 
     @FXML
     void createPressed(MouseEvent event) {
-        String username = usernameBox.getText();
-        String message = String.format("Welcome %s, nice to see you here.", username);
-        showAlert("User successfully created!", message);
-        Stage stage = (Stage) title.getScene().getWindow();
-        changeScreen(stage, "LogInPage.fxml");
+        try {
+            String username = usernameBox.getText();
+            String password = passwordBox.getText();
+            String email = emailBox.getText();
+            if (Validator.validateUsername(username) && Validator.validatePassword(password) && Validator.validateEmail(email)) {
+                SignInUser signInMessage = new SignInUser();
+                signInMessage.setOperation("CREATE_USER");
+                signInMessage.setEmail(email);
+                signInMessage.setUsername(username);
+                signInMessage.setPassword(password);
+                String response = ResponseServer.getResponse(signInMessage);
+                System.out.println("Server response: " + response);
+                Stage stage = (Stage) title.getScene().getWindow();
+                changeScreen(stage, "LogInPage.fxml");
+            }
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @FXML
     public void initialize() {
         Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/IrishGrover-Regular.ttf"), 30);
         title.setFont(titleFont);
-    }
-
-    boolean checkUsername(String username) {
-        return true;
     }
 }
