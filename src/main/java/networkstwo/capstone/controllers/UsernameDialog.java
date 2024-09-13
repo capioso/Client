@@ -6,7 +6,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import networkstwo.capstone.messages.GetUser;
-import networkstwo.capstone.messages.LogInUser;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.services.ResponseServer;
 
