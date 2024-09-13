@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="basePane" maxHeight="400.0" maxWidth="400.0" minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="400.0" styleClass="container" stylesheets="@stylesheet/chatView.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="networkstwo.capstone.controllers.ChatView">
+   <children>
+      <AnchorPane layoutX="14.0" layoutY="-7.0" maxHeight="40.0" minHeight="40.0" onMouseClicked="#headerPressed" prefHeight="40.0" prefWidth="200.0" styleClass="header" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane layoutX="-20.0" layoutY="-80.0" maxHeight="34.0" minHeight="34.0" prefHeight="34.0" prefWidth="40.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="1.0">
+               <children>
+                  <ImageView fx:id="photo" fitHeight="32.0" fitWidth="32.0" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="2.0">
+                     <image>
+                        <Image url="@../../images/bearFace.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <Text fx:id="titleText" fill="WHITE" layoutX="105.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="6.0">
+               <font>
+                  <Font name="System Bold Italic" size="22.0" />
+               </font>
+            </Text>
+         </children>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </AnchorPane>
+      <AnchorPane layoutX="24.0" layoutY="3.0" maxHeight="40.0" minHeight="40.0" prefHeight="40.0" prefWidth="400.0" styleClass="header" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="360.0">
+         <children>
+            <TextField fx:id="textField" layoutX="14.0" layoutY="9.0" maxHeight="26.0" minHeight="26.0" onKeyPressed="#enterPressed" prefHeight="26.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="45.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="7.0">
+               <cursor>
+                  <Cursor fx:constant="TEXT" />
+               </cursor>
+            </TextField>
+            <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="-67.0" layoutY="-95.0" onMouseClicked="#attachPressed" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="7.0">
+               <image>
+                  <Image url="@../../images/clipIcon.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </ImageView>
+         </children>
+      </AnchorPane>
+      <ScrollPane blendMode="DARKEN" layoutX="65.0" layoutY="72.0" prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+         <content>
+            <VBox fx:id="messagesBox" prefWidth="398.0">
+               <padding>
+                  <Insets top="1.0" />
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>
