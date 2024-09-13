@@ -9,6 +9,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import networkstwo.capstone.messages.SignInUser;
+import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.services.ResponseServer;
 import networkstwo.capstone.utils.Validator;
 
@@ -51,11 +52,7 @@ public class SignInPage {
             String password = passwordBox.getText();
             String email = emailBox.getText();
             if (Validator.validateUsername(username) && Validator.validatePassword(password) && Validator.validateEmail(email)) {
-                SignInUser signInMessage = new SignInUser();
-                signInMessage.setOperation("CREATE_USER");
-                signInMessage.setEmail(email);
-                signInMessage.setUsername(username);
-                signInMessage.setPassword(password);
+                SignInUser signInMessage = new SignInUser(Operation.CREATE_USER.name(), username, password, email);
                 String response = ResponseServer.getResponse(signInMessage);
                 showAlert(Alert.AlertType.INFORMATION, "Server response", response);
                 if (response.equals("User created successfully")){

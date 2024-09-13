@@ -32,9 +32,7 @@ public class UsernameDialog {
             if (!validateUsername(username)) {
                 throw new Exception("Bad username");
             }
-            GetUser getMessage = new GetUser();
-            getMessage.setOperation(Operation.GET_USER.name());
-            getMessage.setUsername(username);
+            GetUser getMessage = new GetUser(Operation.GET_USER.name(), username);
             String response = ResponseServer.getResponse(getMessage);
             if (!response.equals("User with username " + username + " exists")) {
                 throw new Exception(response);

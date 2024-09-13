@@ -6,11 +6,11 @@ public class Message {
     @JsonProperty("operation")
     private String operation;
 
-    public String getOperation() {
-        return operation;
+    public Message(String operation) {
+        this.operation = operation;
     }
 
-    public void setOperation(String operation) {
-        this.operation = operation;
+    public String getOperation() {
+        return operation;
     }
 }

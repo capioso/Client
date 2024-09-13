@@ -41,10 +41,7 @@ public class LogInPage {
             String username = usernameBox.getText();
             String password = passwordBox.getText();
             if (Validator.validateUsername(username) && Validator.validatePassword(password)) {
-                LogInUser logInMessage = new LogInUser();
-                logInMessage.setOperation(Operation.LOGIN_USER.name());
-                logInMessage.setUsername(username);
-                logInMessage.setPassword(password);
+                LogInUser logInMessage = new LogInUser(Operation.LOGIN_USER.name(), username, password);
                 String response = ResponseServer.getResponse(logInMessage);
                 showAlert(Alert.AlertType.INFORMATION, "Server Response", response);
                 if (response.equals("Login successful! Welcome " + username)){

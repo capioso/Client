@@ -6,11 +6,12 @@ public class LogInUser extends GetUser {
     @JsonProperty("password")
     private String password;
 
-    public String getPassword() {
-        return password;
+    public LogInUser(String operation, String username, String password) {
+        super(operation, username);
+        this.password = password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public String getPassword() {
+        return password;
     }
 }
