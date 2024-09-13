@@ -43,6 +43,13 @@ public class LogInPage {
                 logInMessage.setPassword(password);
                 String response = ResponseServer.getResponse(logInMessage);
                 showAlert(Alert.AlertType.INFORMATION, "Server Response", response);
+                if (response.equals("Login successful! Welcome " + username)){
+                    Stage stage = (Stage) title.getScene().getWindow();
+                    changeScreen(stage, "ChatPage.fxml");
+                }else{
+                    throw new Exception(response);
+                }
+
             }else {
                 throw new Exception("Bad Username or Password");
             }

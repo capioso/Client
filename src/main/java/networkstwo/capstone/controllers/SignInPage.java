@@ -29,6 +29,12 @@ public class SignInPage {
     private Text title;
 
     @FXML
+    public void initialize() {
+        Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/IrishGrover-Regular.ttf"), 30);
+        title.setFont(titleFont);
+    }
+
+    @FXML
     void cancelPressed(MouseEvent event) {
         Stage stage = (Stage) title.getScene().getWindow();
         changeScreen(stage, "LogInPage.fxml");
@@ -48,8 +54,12 @@ public class SignInPage {
                 signInMessage.setPassword(password);
                 String response = ResponseServer.getResponse(signInMessage);
                 showAlert(Alert.AlertType.INFORMATION, "Server response", response);
-                Stage stage = (Stage) title.getScene().getWindow();
-                changeScreen(stage, "LogInPage.fxml");
+                if (response.equals("User created successfully")){
+                    Stage stage = (Stage) title.getScene().getWindow();
+                    changeScreen(stage, "LogInPage.fxml");
+                }else{
+                    throw new Exception(response);
+                }
             }else{
                 throw new Exception("Invalid username or password or email.");
             }
@@ -59,11 +69,5 @@ public class SignInPage {
             emailBox.setText("");
             passwordBox.setText("");
         }
-    }
-
-    @FXML
-    public void initialize() {
-        Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/IrishGrover-Regular.ttf"), 30);
-        title.setFont(titleFont);
     }
 }
