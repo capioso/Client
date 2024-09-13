@@ -9,6 +9,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import networkstwo.capstone.messages.LogInUser;
+import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.services.ResponseServer;
 import networkstwo.capstone.utils.Validator;
 
@@ -27,8 +28,11 @@ public class LogInPage {
 
     @FXML
     public void initialize() {
-        Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/IrishGrover-Regular.ttf"), 30);
+        Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/IrishGrover-Regular.ttf"), 35);
         title.setFont(titleFont);
+        Font fieldsFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-SemiBoldItalic.ttf"), 21);
+        usernameBox.setFont(fieldsFont);
+        passwordBox.setFont(fieldsFont);
     }
 
     @FXML
@@ -38,7 +42,7 @@ public class LogInPage {
             String password = passwordBox.getText();
             if (Validator.validateUsername(username) && Validator.validatePassword(password)) {
                 LogInUser logInMessage = new LogInUser();
-                logInMessage.setOperation("LOGIN_USER");
+                logInMessage.setOperation(Operation.LOGIN_USER.name());
                 logInMessage.setUsername(username);
                 logInMessage.setPassword(password);
                 String response = ResponseServer.getResponse(logInMessage);

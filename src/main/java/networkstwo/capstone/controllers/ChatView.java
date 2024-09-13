@@ -3,6 +3,7 @@ package networkstwo.capstone.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -29,8 +30,10 @@ public class ChatView {
 
     @FXML
     public void initialize() {
-        Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/IrishGrover-Regular.ttf"), 22);
+        Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 22);
         titleText.setFont(titleFont);
+        Font textFieldFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-SemiBoldItalic.ttf"), 13);
+        textField.setFont(textFieldFont);
     }
 
     @FXML
@@ -40,12 +43,19 @@ public class ChatView {
 
     @FXML
     void enterPressed(KeyEvent event) {
-
+        if (event.getCode() == KeyCode.ENTER) {
+            System.out.println(textField.getText());
+            textField.setText("");
+        }
     }
 
     @FXML
     void headerPressed(MouseEvent event) {
 
+    }
+
+    public void setUsername(String username) {
+        titleText.setText(username);
     }
 
 }

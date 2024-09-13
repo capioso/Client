@@ -21,6 +21,9 @@ public class ChatPage {
     private VBox chatsBox;
 
     @FXML
+    private AnchorPane chatPane;
+
+    @FXML
     private Button chatsButton;
 
     @FXML
@@ -57,6 +60,17 @@ public class ChatPage {
                 AnchorPane pane = fxmlLoader.load();
                 ContactView controller = fxmlLoader.getController();
                 controller.setUsername(username);
+                pane.setOnMouseClicked(newEvent -> {
+                    try {
+                        FXMLLoader chatViewFxml = new FXMLLoader(App.class.getResource("ChatView.fxml"));
+                        AnchorPane anchorPane = chatViewFxml.load();
+                        ChatView controllerView = chatViewFxml.getController();
+                        controllerView.setUsername(username);
+                        chatPane.getChildren().setAll(anchorPane);
+                    }catch (Exception e){
+                        throw new RuntimeException(e.getMessage());
+                    }
+                });
                 chatsBox.getChildren().add(pane);
             }
         }catch (Exception e){

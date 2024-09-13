@@ -5,6 +5,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import networkstwo.capstone.messages.GetUser;
+import networkstwo.capstone.messages.LogInUser;
+import networkstwo.capstone.models.Operation;
+import networkstwo.capstone.services.ResponseServer;
 
 import static networkstwo.capstone.utils.Validator.validateUsername;
 import static networkstwo.capstone.utils.Screen.showAlert;
@@ -24,13 +28,23 @@ public class UsernameDialog {
 
     @FXML
     void okPressed(MouseEvent event) {
-        String username = textField.getText();
-        if (validateUsername(username)){
+        try {
+            String username = textField.getText();
+            if (!validateUsername(username)) {
+                throw new Exception("Bad username");
+            }
+            GetUser getMessage = new GetUser();
+            getMessage.setOperation(Operation.GET_USER.name());
+            getMessage.setUsername(username);
+            String response = ResponseServer.getResponse(getMessage);
+            if (!response.equals("User with username " + username + " exists")) {
+                throw new Exception(response);
+            }
             this.username = username;
             Stage stage = (Stage) textField.getScene().getWindow();
             stage.close();
-        }else{
-            showAlert(Alert.AlertType.ERROR, "Invalid username", "Please enter a valid username");
+        }catch (Exception e){
+            showAlert(Alert.AlertType.ERROR, "Error", e.getMessage());
             textField.setText("");
         }
     }

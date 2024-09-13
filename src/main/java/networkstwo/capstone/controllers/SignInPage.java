@@ -32,6 +32,10 @@ public class SignInPage {
     public void initialize() {
         Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/IrishGrover-Regular.ttf"), 30);
         title.setFont(titleFont);
+        Font fieldsFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-SemiBoldItalic.ttf"), 21);
+        usernameBox.setFont(fieldsFont);
+        emailBox.setFont(fieldsFont);
+        passwordBox.setFont(fieldsFont);
     }
 
     @FXML
