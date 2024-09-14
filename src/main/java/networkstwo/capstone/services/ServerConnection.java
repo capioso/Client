@@ -1,16 +1,20 @@
 package networkstwo.capstone.services;
 
+import networkstwo.capstone.App;
 import networkstwo.capstone.config.ServerConfig;
 import networkstwo.capstone.config.SslConfig;
+import networkstwo.capstone.utils.PropertyLoader;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.Socket;
+import java.util.Properties;
 
 public class ServerConnection {
     private static ServerConnection instance;
     private final ServerConfig connector;
     private final SslConfig sslConfig;
+    private static final PropertyLoader propertyLoader = PropertyLoader.getInstance();
 
     private ServerConnection(String host, int port, String trustStorePath, String trustStorePassword) {
         this.sslConfig = new SslConfig(trustStorePath, trustStorePassword);
@@ -19,7 +23,11 @@ public class ServerConnection {
 
     public static ServerConnection getInstance() {
         if (instance == null) {
-            instance = new ServerConnection("34.130.54.17", 10852, "clienttruststore.jks", "J~aBG6vCQ059");
+            instance = new ServerConnection(
+                    propertyLoader.getServerHost(),
+                    propertyLoader.getSocketPort(),
+                    propertyLoader.getKeystorePath(),
+                    propertyLoader.getKeystorePass());
         }
         return instance;
     }

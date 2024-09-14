@@ -37,3 +37,4 @@ build/
 ### Personalized ###
 server.cer
 data.md
+src/main/resources/.properties

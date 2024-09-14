@@ -3,7 +3,7 @@ package networkstwo.capstone.config;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.KeyStore;
 
 public class SslConfig {
@@ -17,7 +17,10 @@ public class SslConfig {
 
     public SSLSocketFactory createSocketFactory() throws Exception {
         KeyStore trustStore = KeyStore.getInstance("JKS");
-        try (FileInputStream trustStoreInput = new FileInputStream(trustStorePath)) {
+        try (InputStream trustStoreInput = getClass().getClassLoader().getResourceAsStream(trustStorePath)) {
+            if (trustStoreInput == null) {
+                throw new RuntimeException("Truststore file not found: " + trustStorePath);
+            }
             trustStore.load(trustStoreInput, trustStorePassword.toCharArray());
         }
 
