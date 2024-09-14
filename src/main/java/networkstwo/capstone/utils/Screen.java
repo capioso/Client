@@ -26,7 +26,7 @@ public class Screen {
 
     public static void changeScreen(Stage stage, String fxml) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml));
+            FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("pages/" + fxml));
             Parent root = fxmlLoader.load();
             Scene scene = new Scene(root);
             stage.setTitle("CapChat");

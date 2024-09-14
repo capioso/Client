@@ -1,4 +1,4 @@
-package networkstwo.capstone.controllers;
+package networkstwo.capstone.controllers.pages;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +12,9 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import networkstwo.capstone.App;
+import networkstwo.capstone.controllers.views.ChatView;
+import networkstwo.capstone.controllers.views.ContactView;
+import networkstwo.capstone.controllers.views.UsernameView;
 
 public class ChatPage {
     @FXML
@@ -41,28 +44,15 @@ public class ChatPage {
     @FXML
     void addChatPressed(MouseEvent event) {
         try {
-            FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("UsernameDialog.fxml"));
-            Stage dialogStage = new Stage();
-            dialogStage.setTitle("Enter Username");
-            dialogStage.setScene(new Scene(usernameDialog.load()));
-            dialogStage.setMinWidth(300);
-            dialogStage.setMaxWidth(300);
-            dialogStage.setWidth(300);
-            dialogStage.setMinHeight(120);
-            dialogStage.setMaxHeight(120);
-            dialogStage.setHeight(120);
-            dialogStage.initModality(Modality.APPLICATION_MODAL);
-            dialogStage.showAndWait();
-            UsernameDialog dialogController = usernameDialog.getController();
-            String username = dialogController.getUsername();
+            String username = openUsernameView();
             if (!username.isEmpty()) {
-                FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("ContactView.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("views/ContactView.fxml"));
                 AnchorPane pane = fxmlLoader.load();
                 ContactView controller = fxmlLoader.getController();
                 controller.setUsername(username);
                 pane.setOnMouseClicked(newEvent -> {
                     try {
-                        FXMLLoader chatViewFxml = new FXMLLoader(App.class.getResource("ChatView.fxml"));
+                        FXMLLoader chatViewFxml = new FXMLLoader(App.class.getResource("views/ChatView.fxml"));
                         AnchorPane anchorPane = chatViewFxml.load();
                         ChatView controllerView = chatViewFxml.getController();
                         controllerView.setUsername(username);
@@ -76,6 +66,23 @@ public class ChatPage {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    private String openUsernameView() throws Exception{
+        FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("views/UsernameView.fxml"));
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle("Enter Username");
+        dialogStage.setScene(new Scene(usernameDialog.load()));
+        dialogStage.setMinWidth(300);
+        dialogStage.setMaxWidth(300);
+        dialogStage.setWidth(300);
+        dialogStage.setMinHeight(120);
+        dialogStage.setMaxHeight(120);
+        dialogStage.setHeight(120);
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.showAndWait();
+        UsernameView dialogController = usernameDialog.getController();
+        return dialogController.getUsername();
     }
 
     @FXML

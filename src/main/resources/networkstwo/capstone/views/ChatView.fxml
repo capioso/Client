@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="basePane" maxHeight="400.0" maxWidth="400.0" minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="400.0" styleClass="container" stylesheets="@stylesheet/chatView.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="networkstwo.capstone.controllers.ChatView">
+<AnchorPane fx:id="basePane" maxHeight="400.0" maxWidth="400.0" minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="400.0" styleClass="container" stylesheets="@../stylesheet/chatView.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="networkstwo.capstone.controllers.views.ChatView">
    <children>
       <AnchorPane layoutX="14.0" layoutY="-7.0" maxHeight="40.0" minHeight="40.0" onMouseClicked="#headerPressed" prefHeight="40.0" prefWidth="200.0" styleClass="header" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -20,7 +20,7 @@
                <children>
                   <ImageView fx:id="photo" fitHeight="32.0" fitWidth="32.0" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="2.0">
                      <image>
-                        <Image url="@../../images/bearFace.png" />
+                        <Image url="@../../../images/bearFace.png" />
                      </image>
                   </ImageView>
                </children>
@@ -47,7 +47,7 @@
             </TextField>
             <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="-67.0" layoutY="-95.0" onMouseClicked="#attachPressed" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="7.0">
                <image>
-                  <Image url="@../../images/clipIcon.png" />
+                  <Image url="@../../../images/clipIcon.png" />
                </image>
                <cursor>
                   <Cursor fx:constant="HAND" />

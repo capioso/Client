@@ -1,4 +1,4 @@
-package networkstwo.capstone.controllers;
+package networkstwo.capstone.controllers.views;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -12,7 +12,7 @@ import networkstwo.capstone.services.ResponseServer;
 import static networkstwo.capstone.utils.Validator.validateUsername;
 import static networkstwo.capstone.utils.Screen.showAlert;
 
-public class UsernameDialog {
+public class UsernameView {
 
     @FXML
     private TextField textField;

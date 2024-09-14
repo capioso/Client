@@ -1,4 +1,4 @@
-package networkstwo.capstone.controllers;
+package networkstwo.capstone.controllers.views;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
