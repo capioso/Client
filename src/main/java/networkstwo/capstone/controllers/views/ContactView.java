@@ -6,15 +6,15 @@ import javafx.scene.text.Text;
 
 public class ContactView {
     @FXML
-    private Text usernameText;
+    private Text titleText;
 
     @FXML
     public void initialize() {
         Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 15);
-        usernameText.setFont(titleFont);
+        titleText.setFont(titleFont);
     }
 
-    public void setUsername(String username) {
-        usernameText.setText(username);
+    public void setTitle(String title) {
+        titleText.setText(title);
     }
 }

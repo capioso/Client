@@ -7,7 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import networkstwo.capstone.App;
 
-public class Screen {
+public class ScreenUtils {
 
     public static void centerOnScreen(Stage stage) {
         javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();

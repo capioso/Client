@@ -1,23 +1,28 @@
 package networkstwo.capstone.controllers.views;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import networkstwo.capstone.messages.GetUser;
+import networkstwo.capstone.messages.CreateChat;
 import networkstwo.capstone.models.Operation;
-import networkstwo.capstone.services.ResponseServer;
+import networkstwo.capstone.models.User;
+import networkstwo.capstone.services.MessageSender;
 
-import static networkstwo.capstone.utils.Validator.validateUsername;
-import static networkstwo.capstone.utils.Screen.showAlert;
+import static networkstwo.capstone.utils.ValidationUtils.validateUsername;
+import static networkstwo.capstone.utils.ScreenUtils.showAlert;
 
 public class UsernameView {
 
     @FXML
     private TextField textField;
 
-    private String username = "";
+    @FXML
+    private TextField usernameText;
+
+    private String data;
 
     @FXML
     void cancelPressed(MouseEvent event) {
@@ -28,16 +33,19 @@ public class UsernameView {
     @FXML
     void okPressed(MouseEvent event) {
         try {
-            String username = textField.getText();
-            if (!validateUsername(username)) {
-                throw new Exception("Bad username");
+            String username = usernameText.getText();
+            String title = textField.getText();
+            if (!validateUsername(username) || !validateUsername(title)) {
+                throw new Exception("Bad username or title");
             }
-            GetUser getMessage = new GetUser(Operation.GET_USER.name(), username);
-            String response = ResponseServer.getResponse(getMessage);
-            if (!response.equals("User with username " + username + " exists")) {
-                throw new Exception(response);
+            CreateChat getMessage = new CreateChat(Operation.CREATE_CHAT.name(), title, username, User.getToken());
+            JsonNode response = MessageSender.getResponse(getMessage);
+            String responseTitle = response.get("title").asText();
+            String body = response.get("body").asText();
+            if (!responseTitle.equals("message")) {
+                throw new Exception(body);
             }
-            this.username = username;
+            this.data = title;
             Stage stage = (Stage) textField.getScene().getWindow();
             stage.close();
         }catch (Exception e){
@@ -46,8 +54,8 @@ public class UsernameView {
         }
     }
 
-    public String getUsername() {
-        return username;
+    public String getData() {
+        return data;
     }
 
 }

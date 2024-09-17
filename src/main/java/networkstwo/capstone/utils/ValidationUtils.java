@@ -1,6 +1,6 @@
 package networkstwo.capstone.utils;
 
-public class Validator {
+public class ValidationUtils {
     public static boolean validateUsername(String username) {
         if (username == null || username.isEmpty()) {
             return false;

@@ -44,25 +44,26 @@ public class ChatPage {
     @FXML
     void addChatPressed(MouseEvent event) {
         try {
-            String username = openUsernameView();
-            if (!username.isEmpty()) {
-                FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("views/ContactView.fxml"));
-                AnchorPane pane = fxmlLoader.load();
-                ContactView controller = fxmlLoader.getController();
-                controller.setUsername(username);
-                pane.setOnMouseClicked(newEvent -> {
-                    try {
-                        FXMLLoader chatViewFxml = new FXMLLoader(App.class.getResource("views/ChatView.fxml"));
-                        AnchorPane anchorPane = chatViewFxml.load();
-                        ChatView controllerView = chatViewFxml.getController();
-                        controllerView.setUsername(username);
-                        chatPane.getChildren().setAll(anchorPane);
-                    }catch (Exception e){
-                        throw new RuntimeException(e.getMessage());
-                    }
-                });
-                chatsBox.getChildren().add(pane);
+            String title = openUsernameView();
+            if (title.isEmpty()) {
+                return;
             }
+            FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("views/ContactView.fxml"));
+            AnchorPane pane = fxmlLoader.load();
+            ContactView controller = fxmlLoader.getController();
+            controller.setTitle(title);
+            pane.setOnMouseClicked(newEvent -> {
+                try {
+                    FXMLLoader chatViewFxml = new FXMLLoader(App.class.getResource("views/ChatView.fxml"));
+                    AnchorPane anchorPane = chatViewFxml.load();
+                    ChatView controllerView = chatViewFxml.getController();
+                    controllerView.setTitle(title);
+                    chatPane.getChildren().setAll(anchorPane);
+                }catch (Exception e){
+                    throw new RuntimeException(e.getMessage());
+                }
+            });
+            chatsBox.getChildren().add(pane);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -71,18 +72,18 @@ public class ChatPage {
     private String openUsernameView() throws Exception{
         FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("views/UsernameView.fxml"));
         Stage dialogStage = new Stage();
-        dialogStage.setTitle("Enter Username");
+        dialogStage.setTitle("Enter Chat's title & Username");
         dialogStage.setScene(new Scene(usernameDialog.load()));
         dialogStage.setMinWidth(300);
         dialogStage.setMaxWidth(300);
         dialogStage.setWidth(300);
-        dialogStage.setMinHeight(120);
-        dialogStage.setMaxHeight(120);
-        dialogStage.setHeight(120);
+        dialogStage.setMinHeight(160);
+        dialogStage.setMaxHeight(160);
+        dialogStage.setHeight(160);
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.showAndWait();
         UsernameView dialogController = usernameDialog.getController();
-        return dialogController.getUsername();
+        return dialogController.getData();
     }
 
     @FXML

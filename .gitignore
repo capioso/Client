@@ -35,6 +35,6 @@ build/
 .DS_Store
 
 ### Personalized ###
-server.cer
+src/main/resources/server.cer
 data.md
 src/main/resources/.properties

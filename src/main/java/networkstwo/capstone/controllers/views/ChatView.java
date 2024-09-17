@@ -54,7 +54,7 @@ public class ChatView {
 
     }
 
-    public void setUsername(String username) {
+    public void setTitle(String username) {
         titleText.setText(username);
     }
 

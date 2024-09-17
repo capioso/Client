@@ -9,8 +9,8 @@ import networkstwo.capstone.services.ServerConnection;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
-import static networkstwo.capstone.utils.Screen.changeScreen;
-import static networkstwo.capstone.utils.Screen.showAlert;
+import static networkstwo.capstone.utils.ScreenUtils.changeScreen;
+import static networkstwo.capstone.utils.ScreenUtils.showAlert;
 
 public class App extends Application {
     @Override

@@ -1,5 +1,6 @@
 package networkstwo.capstone.controllers.pages;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
@@ -10,11 +11,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import networkstwo.capstone.messages.SignInUser;
 import networkstwo.capstone.models.Operation;
-import networkstwo.capstone.services.ResponseServer;
-import networkstwo.capstone.utils.Validator;
+import networkstwo.capstone.services.MessageSender;
+import networkstwo.capstone.utils.ValidationUtils;
 
-import static networkstwo.capstone.utils.Screen.changeScreen;
-import static networkstwo.capstone.utils.Screen.showAlert;
+import static networkstwo.capstone.utils.ScreenUtils.changeScreen;
+import static networkstwo.capstone.utils.ScreenUtils.showAlert;
 
 public class SignInPage {
     @FXML
@@ -51,15 +52,16 @@ public class SignInPage {
             String username = usernameBox.getText();
             String password = passwordBox.getText();
             String email = emailBox.getText();
-            if (Validator.validateUsername(username) && Validator.validatePassword(password) && Validator.validateEmail(email)) {
+            if (ValidationUtils.validateUsername(username) && ValidationUtils.validatePassword(password) && ValidationUtils.validateEmail(email)) {
                 SignInUser signInMessage = new SignInUser(Operation.CREATE_USER.name(), username, password, email);
-                String response = ResponseServer.getResponse(signInMessage);
-                showAlert(Alert.AlertType.INFORMATION, "Server response", response);
-                if (response.equals("User created successfully")){
-                    Stage stage = (Stage) title.getScene().getWindow();
+                JsonNode response = MessageSender.getResponse(signInMessage);
+                String title = response.get("title").asText();
+                String body = response.get("body").asText();
+                if (title.equals("message")) {
+                    Stage stage = (Stage) this.title.getScene().getWindow();
                     changeScreen(stage, "LogInPage.fxml");
                 }else{
-                    throw new Exception(response);
+                    throw new Exception(body);
                 }
             }else{
                 throw new Exception("Invalid username or password or email.");

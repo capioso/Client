@@ -4,26 +4,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class PropertyLoader {
-    private static PropertyLoader instance;
+public class PropertiesUtils {
+    private static PropertiesUtils instance;
     private final Properties properties;
 
 
-    private PropertyLoader() {
+    private PropertiesUtils() throws Exception{
         properties = new Properties();
-        try (InputStream input = PropertyLoader.class.getClassLoader().getResourceAsStream(".properties")) {
+        try (InputStream input = PropertiesUtils.class.getClassLoader().getResourceAsStream(".properties")) {
             if (input == null) {
                 throw new IOException("Sorry, unable to find config.properties");
             }
             properties.load(input);
-        } catch (IOException e) {
-            System.out.println("Error loading config.properties: " + e.getMessage());
         }
     }
 
-    public static synchronized PropertyLoader getInstance() {
+    public static synchronized PropertiesUtils getInstance() throws Exception {
         if (instance == null) {
-            instance = new PropertyLoader();
+            instance = new PropertiesUtils();
         }
         return instance;
     }

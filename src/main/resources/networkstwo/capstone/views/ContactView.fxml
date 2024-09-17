@@ -17,7 +17,7 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <Text fx:id="usernameText" layoutX="39.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" wrappingWidth="132.72216796875" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="4.0" />
+      <Text fx:id="titleText" layoutX="39.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" wrappingWidth="132.72216796875" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="4.0" />
    </children>
    <cursor>
       <Cursor fx:constant="HAND" />

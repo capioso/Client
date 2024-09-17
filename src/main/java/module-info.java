@@ -11,6 +11,7 @@ module networkstwo.capstone {
     exports networkstwo.capstone.messages;
     exports networkstwo.capstone.services;
     exports networkstwo.capstone.config;
+    exports networkstwo.capstone.models;
 
 
     exports networkstwo.capstone.controllers.pages;
