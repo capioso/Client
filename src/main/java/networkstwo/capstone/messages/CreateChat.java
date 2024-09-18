@@ -2,30 +2,22 @@ package networkstwo.capstone.messages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CreateChat extends Message {
+public class CreateChat extends GetChat {
     @JsonProperty("title")
     private String title;
 
     @JsonProperty("username")
     private String username;
 
-    @JsonProperty("token")
-    private String token;
-
     public CreateChat(String operation, String title, String username, String token) {
-        super(operation);
+        super(operation, token);
         this.title = title;
         this.username = username;
-        this.token = token;
     }
 
     public String getUsername() {return username;}
 
     public String getTitle() {
         return title;
-    }
-
-    public String getToken() {
-        return token;
     }
 }

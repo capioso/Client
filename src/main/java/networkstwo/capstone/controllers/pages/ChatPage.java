@@ -1,5 +1,6 @@
 package networkstwo.capstone.controllers.pages;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,6 +16,10 @@ import networkstwo.capstone.App;
 import networkstwo.capstone.controllers.views.ChatView;
 import networkstwo.capstone.controllers.views.ContactView;
 import networkstwo.capstone.controllers.views.UsernameView;
+import networkstwo.capstone.messages.GetChat;
+import networkstwo.capstone.models.Operation;
+import networkstwo.capstone.models.User;
+import networkstwo.capstone.services.MessageSender;
 
 public class ChatPage {
     @FXML
@@ -48,25 +53,39 @@ public class ChatPage {
             if (title.isEmpty()) {
                 return;
             }
-            FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("views/ContactView.fxml"));
-            AnchorPane pane = fxmlLoader.load();
-            ContactView controller = fxmlLoader.getController();
-            controller.setTitle(title);
-            pane.setOnMouseClicked(newEvent -> {
-                try {
-                    FXMLLoader chatViewFxml = new FXMLLoader(App.class.getResource("views/ChatView.fxml"));
-                    AnchorPane anchorPane = chatViewFxml.load();
-                    ChatView controllerView = chatViewFxml.getController();
-                    controllerView.setTitle(title);
-                    chatPane.getChildren().setAll(anchorPane);
-                }catch (Exception e){
-                    throw new RuntimeException(e.getMessage());
-                }
-            });
-            chatsBox.getChildren().add(pane);
+            addContactView(title);
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public void preLoadContacts(){
+        GetChat getChatMessage = new GetChat(Operation.GET_CHAT.name(), User.getToken());
+        JsonNode response = MessageSender.getResponse(getChatMessage);
+        String title = response.get("title").asText();
+        String body = response.get("body").asText();
+        if (title.equals("message")) {
+            System.out.println("BODY: " + body);
+        }
+    }
+
+    private void addContactView(String title) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("views/ContactView.fxml"));
+        AnchorPane pane = fxmlLoader.load();
+        ContactView controller = fxmlLoader.getController();
+        controller.setTitle(title);
+        pane.setOnMouseClicked(newEvent -> {
+            try {
+                FXMLLoader chatViewFxml = new FXMLLoader(App.class.getResource("views/ChatView.fxml"));
+                AnchorPane anchorPane = chatViewFxml.load();
+                ChatView controllerView = chatViewFxml.getController();
+                controllerView.setTitle(title);
+                chatPane.getChildren().setAll(anchorPane);
+            }catch (Exception e){
+                throw new RuntimeException(e.getMessage());
+            }
+        });
+        chatsBox.getChildren().add(pane);
     }
 
     private String openUsernameView() throws Exception{
@@ -98,6 +117,6 @@ public class ChatPage {
 
     @FXML
     void settingsPressed(MouseEvent event) {
-
+        preLoadContacts();
     }
 }
