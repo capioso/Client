@@ -1,6 +1,8 @@
 package networkstwo.capstone.controllers.pages;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -50,15 +52,18 @@ public class ChatPage {
         GroupsButton.setFont(buttonFont);
         chatsButton.setFont(buttonFont);
         preLoadContacts();
-        EventBus.getInstance().messageProperty().addListener((obs, oldMessage, newMessage) -> {
+        ChangeListener<String> eventBusListener = (obs, oldMessage, newMessage) -> {
             if ("Chat created".equals(newMessage)) {
-                try {
-                    preLoadContacts();
-                } catch (Exception e) {
-                   System.out.println("Problems with event bus: " + e.getMessage());
-                }
+                Platform.runLater(() -> {
+                    try {
+                        preLoadContacts();
+                    } catch (Exception e) {
+                        System.out.println("Problems with event bus: " + e.getMessage());
+                    }
+                });
             }
-        });
+        };
+        EventBus.getInstance().messageProperty().addListener(eventBusListener);
     }
 
     @FXML
@@ -75,6 +80,7 @@ public class ChatPage {
     }
 
     public void preLoadContacts() throws Exception {
+        chatsBox.getChildren().clear();
         GetChat getChatMessage = new GetChat(Operation.GET_CHAT.name(), User.getToken());
         JsonNode response = MessageSender.getResponse(getChatMessage);
         String title = response.get("title").asText();
@@ -84,6 +90,7 @@ public class ChatPage {
             User.setTitles(titles);
             titles.forEach(newTitle -> {
                 try {
+                    System.out.println("Adding contact: " + newTitle);
                     addContactView(newTitle);
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage());

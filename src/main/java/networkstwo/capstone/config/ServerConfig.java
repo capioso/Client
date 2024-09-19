@@ -47,12 +47,12 @@ public class ServerConfig {
                 ObjectMapper objectMapper = new ObjectMapper();
                 while ((response = in.readLine()) != null) {
                     JsonNode node = objectMapper.readTree(response);
-                    responseQueue.offer(node);
                     if (node.get("title").asText().equals("update")){
                         String operation = node.get("body").asText();
                         EventBus.getInstance().sendMessage(operation);
+                    }else{
+                        responseQueue.offer(node);
                     }
-
                 }
             } catch (IOException e) {
                 System.out.println("Error while listening: " + e.getMessage());
