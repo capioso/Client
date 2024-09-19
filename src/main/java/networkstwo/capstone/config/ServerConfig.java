@@ -2,6 +2,7 @@ package networkstwo.capstone.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import networkstwo.capstone.services.EventBus;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -45,8 +46,13 @@ public class ServerConfig {
                 String response;
                 ObjectMapper objectMapper = new ObjectMapper();
                 while ((response = in.readLine()) != null) {
-                    responseQueue.offer(objectMapper.readTree(response));
-                    System.out.println(response);
+                    JsonNode node = objectMapper.readTree(response);
+                    responseQueue.offer(node);
+                    if (node.get("title").asText().equals("update")){
+                        String operation = node.get("body").asText();
+                        EventBus.getInstance().sendMessage(operation);
+                    }
+
                 }
             } catch (IOException e) {
                 System.out.println("Error while listening: " + e.getMessage());

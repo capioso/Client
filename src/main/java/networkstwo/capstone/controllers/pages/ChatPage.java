@@ -19,6 +19,7 @@ import networkstwo.capstone.controllers.views.UsernameView;
 import networkstwo.capstone.messages.GetChat;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
+import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
 import java.util.ArrayList;
@@ -49,6 +50,15 @@ public class ChatPage {
         GroupsButton.setFont(buttonFont);
         chatsButton.setFont(buttonFont);
         preLoadContacts();
+        EventBus.getInstance().messageProperty().addListener((obs, oldMessage, newMessage) -> {
+            if ("Chat created".equals(newMessage)) {
+                try {
+                    preLoadContacts();
+                } catch (Exception e) {
+                   System.out.println("Problems with event bus: " + e.getMessage());
+                }
+            }
+        });
     }
 
     @FXML
