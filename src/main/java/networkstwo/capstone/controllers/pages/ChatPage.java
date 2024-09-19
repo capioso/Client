@@ -65,10 +65,11 @@ public class ChatPage {
     @FXML
     void addChatPressed(MouseEvent event) {
         try {
-            boolean chatCreated = openUsernameView();
-            if (!chatCreated) {
-                throw new Exception("Problem rendering chat");
+            String chatCreated = openUsernameView();
+            if (chatCreated.isBlank() || chatCreated.isEmpty()) {
+                throw new Exception("Problem adding chat");
             }
+            addContactView(chatCreated);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -124,7 +125,7 @@ public class ChatPage {
         chatsBox.getChildren().add(pane);
     }
 
-    private boolean openUsernameView() throws Exception {
+    private String openUsernameView() throws Exception {
         FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("views/UsernameView.fxml"));
         Stage dialogStage = new Stage();
         dialogStage.setTitle("Enter Chat's title & Username");

@@ -27,7 +27,7 @@ public class UsernameView {
     @FXML
     private TextField usernameText;
 
-    private boolean data = false;
+    private String data = "";
 
     @FXML
     public void initialize() throws Exception {
@@ -64,7 +64,7 @@ public class UsernameView {
             if (!responseTitle.equals("message")) {
                 throw new Exception(body);
             }
-            this.data = true;
+            this.data = title;
             Stage stage = (Stage) textField.getScene().getWindow();
             stage.close();
         } catch (Exception e) {
@@ -78,7 +78,7 @@ public class UsernameView {
         usernameText.textProperty().addListener(textFieldListener);
     }
 
-    public boolean getData() {
+    public String getData() {
         return data;
     }
 
