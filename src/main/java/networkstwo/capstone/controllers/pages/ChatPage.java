@@ -48,17 +48,16 @@ public class ChatPage {
         Font buttonFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 17);
         usernameLabel.setFont(buttonFont);
         usernameLabel.setText("Hi " + User.getUsername() + "!");
-        preLoadContacts();
+        updateUserTitles();
         ChangeListener<String> eventBusListener = (obs, oldMessage, newMessage) -> {
-            if ("Chat created".equals(newMessage)) {
-                Platform.runLater(() -> {
-                    try {
-                        preLoadContacts();
-                    } catch (Exception e) {
-                        System.out.println("Problems with event bus: " + e.getMessage());
-                    }
-                });
-            }
+            Platform.runLater(() -> {
+                try {
+                    User.getTitles().add(newMessage);
+                    addContactView(newMessage);
+                } catch (Exception e) {
+                    System.out.println("Problems with event bus: " + e.getMessage());
+                }
+            });
         };
         EventBus.getInstance().messageProperty().addListener(eventBusListener);
     }
@@ -68,16 +67,14 @@ public class ChatPage {
         try {
             boolean chatCreated = openUsernameView();
             if (!chatCreated) {
-                return;
+                throw new Exception("Problem rendering chat");
             }
-            preLoadContacts();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void preLoadContacts() throws Exception {
-        chatsBox.getChildren().clear();
+    public void updateUserTitles() throws Exception{
         GetChat getChatMessage = new GetChat(Operation.GET_CHAT.name(), User.getToken());
         JsonNode response = MessageSender.getResponse(getChatMessage);
         String title = response.get("title").asText();
@@ -85,14 +82,19 @@ public class ChatPage {
         if (title.equals("message")) {
             List<String> titles = stringToList(body);
             User.setTitles(titles);
-            titles.forEach(newTitle -> {
-                try {
-                    addContactView(newTitle);
-                } catch (Exception e) {
-                    throw new RuntimeException(e.getMessage());
-                }
-            });
+            reLoadContacts();
         }
+    }
+
+    public void reLoadContacts() throws Exception {
+        chatsBox.getChildren().clear();
+        User.getTitles().forEach(newTitle -> {
+            try {
+                addContactView(newTitle);
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
+        });
     }
 
     private List<String> stringToList(String input) {

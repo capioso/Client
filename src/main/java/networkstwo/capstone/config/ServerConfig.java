@@ -47,7 +47,7 @@ public class ServerConfig {
                 ObjectMapper objectMapper = new ObjectMapper();
                 while ((response = in.readLine()) != null) {
                     JsonNode node = objectMapper.readTree(response);
-                    if (node.get("title").asText().equals("update")){
+                    if (node.get("title").asText().equals("chatUpdate")){
                         String operation = node.get("body").asText();
                         EventBus.getInstance().sendMessage(operation);
                     }else{

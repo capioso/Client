@@ -1,6 +1,8 @@
 package networkstwo.capstone.controllers.views;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -10,6 +12,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import networkstwo.capstone.App;
+import networkstwo.capstone.messages.GetChat;
+import networkstwo.capstone.messages.SendMessage;
+import networkstwo.capstone.models.Operation;
+import networkstwo.capstone.models.User;
+import networkstwo.capstone.services.MessageSender;
 
 public class ChatView {
 
@@ -44,8 +52,24 @@ public class ChatView {
     @FXML
     void enterPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
-            System.out.println(textField.getText());
-            textField.setText("");
+            String content = textField.getText();
+            try {
+                SendMessage sendMessage = new SendMessage(Operation.SEND_MESSAGE.name(), User.getToken(), content, titleText.getText());
+                JsonNode response = MessageSender.getResponse(sendMessage);
+                String title = response.get("title").asText();
+                String body = response.get("body").asText();
+                if (title.equals("message")){
+                    FXMLLoader messageView = new FXMLLoader(App.class.getResource("views/MessageView.fxml"));
+                    AnchorPane anchorPane = messageView.load();
+                    MessageView controller = messageView.getController();
+                    controller.setUsernameTitle(User.getUsername());
+                    controller.setMessageBody(content);
+                    messagesBox.getChildren().add(anchorPane);
+                    textField.setText("");
+                }
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
         }
     }
 

@@ -58,9 +58,9 @@
             </ImageView>
          </children>
       </AnchorPane>
-      <ScrollPane blendMode="DARKEN" layoutX="65.0" layoutY="72.0" prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+      <ScrollPane blendMode="DARKEN" hbarPolicy="NEVER" layoutX="65.0" layoutY="72.0" prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
          <content>
-            <VBox fx:id="messagesBox" prefWidth="398.0">
+            <VBox fx:id="messagesBox" alignment="TOP_CENTER" prefWidth="398.0" spacing="5.0">
                <padding>
                   <Insets top="1.0" />
                </padding>

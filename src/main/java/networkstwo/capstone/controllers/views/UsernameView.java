@@ -27,7 +27,7 @@ public class UsernameView {
     @FXML
     private TextField usernameText;
 
-    private boolean data;
+    private boolean data = false;
 
     @FXML
     public void initialize() throws Exception {
