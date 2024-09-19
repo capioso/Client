@@ -1,10 +1,15 @@
 package networkstwo.capstone.controllers.views;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import networkstwo.capstone.messages.CreateChat;
 import networkstwo.capstone.models.Operation;
@@ -17,12 +22,17 @@ import static networkstwo.capstone.utils.ScreenUtils.showAlert;
 public class UsernameView {
 
     @FXML
-    private TextField textField;
+    private Text textField;
 
     @FXML
     private TextField usernameText;
 
-    private String data;
+    private boolean data;
+
+    @FXML
+    public void initialize() throws Exception {
+        textUpdater();
+    }
 
     @FXML
     void cancelPressed(MouseEvent event) {
@@ -38,23 +48,37 @@ public class UsernameView {
             if (!validateUsername(username) || !validateUsername(title)) {
                 throw new Exception("Bad username or title");
             }
+            if (username.equals(User.getUsername())){
+                throw new Exception("You can not add yourself");
+            }
+            if (User.getTitles().contains(username)){
+                throw new Exception("Title already added");
+            }
+
             CreateChat getMessage = new CreateChat(Operation.CREATE_CHAT.name(), title, username, User.getToken());
             JsonNode response = MessageSender.getResponse(getMessage);
+
             String responseTitle = response.get("title").asText();
             String body = response.get("body").asText();
+
             if (!responseTitle.equals("message")) {
                 throw new Exception(body);
             }
-            this.data = title;
+            this.data = true;
             Stage stage = (Stage) textField.getScene().getWindow();
             stage.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Error", e.getMessage());
             textField.setText("");
         }
     }
 
-    public String getData() {
+    private void textUpdater() {
+        ChangeListener<String> textFieldListener = (observable, oldValue, newValue) -> textField.setText(newValue);
+        usernameText.textProperty().addListener(textFieldListener);
+    }
+
+    public boolean getData() {
         return data;
     }
 

@@ -9,14 +9,10 @@ public class MessageSender {
     public static JsonNode getResponse(Message message) {
         try {
             ServerConnection serverConnection = ServerConnection.getInstance();
-
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonMessage = objectMapper.writeValueAsString(message);
             serverConnection.sendMessage(jsonMessage);
-
-            String receivedMessage = serverConnection.receiveMessage();
-
-            return objectMapper.readTree(receivedMessage);
+            return serverConnection.getResponse();
 
         } catch (Exception e) {
             ObjectMapper objectMapper = new ObjectMapper();

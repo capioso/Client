@@ -21,6 +21,10 @@ import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.MessageSender;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class ChatPage {
     @FXML
     private Button GroupsButton;
@@ -38,35 +42,52 @@ public class ChatPage {
     private Text titleText;
 
     @FXML
-    public void initialize() {
+    public void initialize() throws Exception {
         Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/IrishGrover-Regular.ttf"), 21);
         titleText.setFont(titleFont);
         Font buttonFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 10);
         GroupsButton.setFont(buttonFont);
         chatsButton.setFont(buttonFont);
+        preLoadContacts();
     }
 
     @FXML
     void addChatPressed(MouseEvent event) {
         try {
-            String title = openUsernameView();
-            if (title.isEmpty()) {
+            boolean chatCreated = openUsernameView();
+            if (!chatCreated) {
                 return;
             }
-            addContactView(title);
-        }catch (Exception e){
+            preLoadContacts();
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void preLoadContacts(){
+    public void preLoadContacts() throws Exception {
         GetChat getChatMessage = new GetChat(Operation.GET_CHAT.name(), User.getToken());
         JsonNode response = MessageSender.getResponse(getChatMessage);
         String title = response.get("title").asText();
         String body = response.get("body").asText();
         if (title.equals("message")) {
-            System.out.println("BODY: " + body);
+            List<String> titles = stringToList(body);
+            User.setTitles(titles);
+            titles.forEach(newTitle -> {
+                try {
+                    addContactView(newTitle);
+                } catch (Exception e) {
+                    throw new RuntimeException(e.getMessage());
+                }
+            });
         }
+    }
+
+    private List<String> stringToList(String input) {
+        if (input == null || input.equals("[]")) {
+            return new ArrayList<>();
+        }
+        String cleanInput = input.substring(1, input.length() - 1);
+        return Arrays.asList(cleanInput.split("\\s*,\\s*"));
     }
 
     private void addContactView(String title) throws Exception {
@@ -81,14 +102,14 @@ public class ChatPage {
                 ChatView controllerView = chatViewFxml.getController();
                 controllerView.setTitle(title);
                 chatPane.getChildren().setAll(anchorPane);
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
         });
         chatsBox.getChildren().add(pane);
     }
 
-    private String openUsernameView() throws Exception{
+    private boolean openUsernameView() throws Exception {
         FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("views/UsernameView.fxml"));
         Stage dialogStage = new Stage();
         dialogStage.setTitle("Enter Chat's title & Username");
@@ -117,6 +138,6 @@ public class ChatPage {
 
     @FXML
     void settingsPressed(MouseEvent event) {
-        preLoadContacts();
+
     }
 }

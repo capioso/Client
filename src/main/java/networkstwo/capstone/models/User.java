@@ -1,10 +1,22 @@
 package networkstwo.capstone.models;
 
+import java.util.List;
+
 public class User {
     private static String token;
     private static String username;
     private static String email;
     private static String password;
+
+    public static List<String> getTitles() {
+        return titles;
+    }
+
+    public static void setTitles(List<String> titles) {
+        User.titles = titles;
+    }
+
+    private static List<String> titles;
 
     public static String getEmail() {
         return email;

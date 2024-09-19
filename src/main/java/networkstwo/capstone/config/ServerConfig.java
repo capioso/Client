@@ -1,5 +1,8 @@
 package networkstwo.capstone.config;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.BufferedReader;
@@ -7,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ServerConfig {
     private final String host;
@@ -14,6 +19,7 @@ public class ServerConfig {
     private SSLSocket socket;
     private PrintWriter out;
     private BufferedReader in;
+    private final BlockingQueue<JsonNode> responseQueue = new LinkedBlockingQueue<>();
 
     public ServerConfig(String host, int port) {
         this.host = host;
@@ -25,11 +31,31 @@ public class ServerConfig {
             socket = (SSLSocket) sslSocketFactory.createSocket(host, port);
             this.out = new PrintWriter(socket.getOutputStream(), true);
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            startListening();
             return true;
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             return false;
         }
+    }
+
+    private void startListening() {
+        new Thread(() -> {
+            try {
+                String response;
+                ObjectMapper objectMapper = new ObjectMapper();
+                while ((response = in.readLine()) != null) {
+                    responseQueue.offer(objectMapper.readTree(response));
+                    System.out.println(response);
+                }
+            } catch (IOException e) {
+                System.out.println("Error while listening: " + e.getMessage());
+            }
+        }).start();
+    }
+
+    public JsonNode getNextResponse() throws InterruptedException {
+        return responseQueue.take();
     }
 
     public Socket getSocket() {

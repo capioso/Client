@@ -1,5 +1,6 @@
 package networkstwo.capstone.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import networkstwo.capstone.config.ServerConfig;
 import networkstwo.capstone.config.SslConfig;
 import networkstwo.capstone.utils.PropertiesUtils;
@@ -55,9 +56,8 @@ public class ServerConnection {
     public void sendMessage(String message) {
         connector.sendMessage(message);
     }
-
-    public String receiveMessage() throws IOException {
-        return connector.receiveMessage();
+    public JsonNode getResponse() throws InterruptedException {
+        return connector.getNextResponse();
     }
 
     public void closeSocket() {

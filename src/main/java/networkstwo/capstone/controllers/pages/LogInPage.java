@@ -13,6 +13,7 @@ import networkstwo.capstone.messages.LogInUser;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.MessageSender;
+import networkstwo.capstone.services.ServerConnection;
 import networkstwo.capstone.utils.ValidationUtils;
 
 import static networkstwo.capstone.utils.ScreenUtils.changeScreen;

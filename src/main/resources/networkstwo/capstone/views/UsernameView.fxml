@@ -5,20 +5,13 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="120.0" maxWidth="300.0" minHeight="120.0" minWidth="300.0" prefHeight="120.0" prefWidth="300.0" styleClass="base" stylesheets="@../stylesheet/usernameDialog.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="networkstwo.capstone.controllers.views.UsernameView">
    <cursor>
       <Cursor fx:constant="HAND" />
    </cursor>
    <children>
-      <TextField fx:id="textField" alignment="CENTER" layoutX="-42.0" layoutY="32.0" maxHeight="28.0" maxWidth="276.0" minHeight="28.0" minWidth="276.0" prefHeight="28.0" prefWidth="276.0" promptText="chat's title" styleClass="rounded" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-         <font>
-            <Font name="System Bold Italic" size="13.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="TEXT" />
-         </cursor>
-      </TextField>
       <Button layoutX="56.0" layoutY="44.0" mnemonicParsing="false" onMouseClicked="#cancelPressed" text="Cancel" textAlignment="CENTER" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="88.0">
          <cursor>
             <Cursor fx:constant="HAND" />
@@ -35,7 +28,7 @@
             <Font name="System Bold" size="10.0" />
          </font>
       </Button>
-      <TextField fx:id="usernameText" alignment="CENTER" layoutX="12.0" layoutY="51.0" maxHeight="28.0" maxWidth="276.0" minHeight="28.0" minWidth="276.0" prefHeight="28.0" prefWidth="276.0" promptText="username" styleClass="rounded" AnchorPane.topAnchor="50.0">
+      <TextField fx:id="usernameText" alignment="CENTER" layoutX="12.0" layoutY="51.0" maxHeight="28.0" maxWidth="276.0" minHeight="28.0" minWidth="276.0" prefHeight="28.0" prefWidth="276.0" promptText="username" styleClass="rounded" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="50.0">
          <font>
             <Font name="System Bold Italic" size="13.0" />
          </font>
@@ -43,5 +36,9 @@
             <Cursor fx:constant="TEXT" />
          </cursor>
       </TextField>
+      <Text fx:id="textField" fill="#75290b" layoutX="14.0" layoutY="14.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" textAlignment="CENTER" wrappingWidth="274.0" AnchorPane.leftAnchor="12.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="10.0">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font></Text>
    </children>
 </AnchorPane>
