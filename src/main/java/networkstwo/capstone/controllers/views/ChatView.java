@@ -57,20 +57,29 @@ public class ChatView {
                 SendMessage sendMessage = new SendMessage(Operation.SEND_MESSAGE.name(), User.getToken(), content, titleText.getText());
                 JsonNode response = MessageSender.getResponse(sendMessage);
                 String title = response.get("title").asText();
-                String body = response.get("body").asText();
                 if (title.equals("message")){
-                    FXMLLoader messageView = new FXMLLoader(App.class.getResource("views/MessageView.fxml"));
-                    AnchorPane anchorPane = messageView.load();
-                    MessageView controller = messageView.getController();
-                    controller.setUsernameTitle(User.getUsername());
-                    controller.setMessageBody(content);
-                    messagesBox.getChildren().add(anchorPane);
+                    addMessageView(true, User.getUsername(), content);
                     textField.setText("");
                 }
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    private void addMessageView(boolean isOwn, String username, String content) throws Exception{
+        FXMLLoader messageView;
+        if (isOwn){
+            messageView = new FXMLLoader(App.class.getResource("views/MessageView.fxml"));
+        }else{
+            messageView = new FXMLLoader(App.class.getResource("views/OtherMessageView.fxml"));
+        }
+        AnchorPane anchorPane = messageView.load();
+
+        MessageView controller = messageView.getController();
+        controller.setUsernameTitle(username);
+        controller.setMessageBody(content);
+        messagesBox.getChildren().add(anchorPane);
     }
 
     @FXML

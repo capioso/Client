@@ -67,7 +67,7 @@ public class ChatPage {
         try {
             String chatCreated = openUsernameView();
             if (chatCreated.isBlank() || chatCreated.isEmpty()) {
-                throw new Exception("Problem adding chat");
+                return;
             }
             addContactView(chatCreated);
         } catch (Exception e) {
