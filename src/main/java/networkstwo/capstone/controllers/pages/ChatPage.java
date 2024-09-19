@@ -30,7 +30,7 @@ import java.util.List;
 
 public class ChatPage {
     @FXML
-    private Button GroupsButton;
+    private Text usernameLabel;
 
     @FXML
     private VBox chatsBox;
@@ -39,18 +39,15 @@ public class ChatPage {
     private AnchorPane chatPane;
 
     @FXML
-    private Button chatsButton;
-
-    @FXML
     private Text titleText;
 
     @FXML
     public void initialize() throws Exception {
         Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/IrishGrover-Regular.ttf"), 21);
         titleText.setFont(titleFont);
-        Font buttonFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 10);
-        GroupsButton.setFont(buttonFont);
-        chatsButton.setFont(buttonFont);
+        Font buttonFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 17);
+        usernameLabel.setFont(buttonFont);
+        usernameLabel.setText("Hi " + User.getUsername() + "!");
         preLoadContacts();
         ChangeListener<String> eventBusListener = (obs, oldMessage, newMessage) -> {
             if ("Chat created".equals(newMessage)) {
@@ -90,7 +87,6 @@ public class ChatPage {
             User.setTitles(titles);
             titles.forEach(newTitle -> {
                 try {
-                    System.out.println("Adding contact: " + newTitle);
                     addContactView(newTitle);
                 } catch (Exception e) {
                     throw new RuntimeException(e.getMessage());
@@ -141,16 +137,6 @@ public class ChatPage {
         dialogStage.showAndWait();
         UsernameView dialogController = usernameDialog.getController();
         return dialogController.getData();
-    }
-
-    @FXML
-    void chatsPressed(MouseEvent event) {
-
-    }
-
-    @FXML
-    void groupsPressed(MouseEvent event) {
-
     }
 
     @FXML
