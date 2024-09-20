@@ -56,7 +56,7 @@ public class ChatPage {
                 try {
                     String title = getTitleByChatId(newMessage);
                     User.getChats().add(new Chat(UUID.fromString(newMessage), title));
-                    addContactView(title);
+                    addContactView(UUID.fromString(newMessage), title);
                 } catch (Exception e) {
                     System.out.println("Problems with event bus: " + e.getMessage());
                 }
@@ -73,7 +73,7 @@ public class ChatPage {
                 String newTitle = getTitleByChatId(chatId.toString());
                 if (newTitle != null){
                     User.getChats().add(new Chat(chatId, newTitle));
-                    addContactView(newTitle);
+                    addContactView(chatId, newTitle);
                 }else{
                     System.out.println("Problem adding chat");
                 }
@@ -116,7 +116,7 @@ public class ChatPage {
         chatsBox.getChildren().clear();
         User.getChats().forEach(chat -> {
             try {
-                addContactView(chat.getTitle());
+                addContactView(chat.getId(), chat.getTitle());
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
