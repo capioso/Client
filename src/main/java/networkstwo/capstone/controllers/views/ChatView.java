@@ -18,6 +18,8 @@ import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.MessageSender;
 
+import java.util.UUID;
+
 public class ChatView {
 
     @FXML
@@ -34,6 +36,8 @@ public class ChatView {
 
     @FXML
     private Text titleText;
+
+    private UUID chatId;
 
     @FXML
     public void initialize() {
@@ -53,7 +57,7 @@ public class ChatView {
         if (event.getCode() == KeyCode.ENTER) {
             String content = textField.getText();
             try {
-                SendMessage sendMessage = new SendMessage(Operation.SEND_MESSAGE.name(), User.getToken(), content, titleText.getText());
+                SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, content);
                 JsonNode response = MessageSender.getResponse(sendMessage);
                 String title = response.get("title").asText();
                 if (title.equals("message")){
@@ -86,8 +90,9 @@ public class ChatView {
 
     }
 
-    public void setTitle(String username) {
-        titleText.setText(username);
+    public void setData(UUID chatId, String title) {
+        this.chatId = chatId;
+        titleText.setText(title);
     }
 
 }

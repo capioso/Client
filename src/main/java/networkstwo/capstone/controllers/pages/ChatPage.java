@@ -73,6 +73,7 @@ public class ChatPage {
                 String newTitle = getTitleByChatId(chatId.toString());
                 if (newTitle != null){
                     User.getChats().add(new Chat(chatId, newTitle));
+                    addContactView(newTitle);
                 }else{
                     System.out.println("Problem adding chat");
                 }
@@ -130,7 +131,7 @@ public class ChatPage {
         return Arrays.asList(cleanInput.split("\\s*,\\s*"));
     }
 
-    private void addContactView(String title) throws Exception {
+    private void addContactView(UUID chatId, String title) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("views/ContactView.fxml"));
         AnchorPane pane = fxmlLoader.load();
         ContactView controller = fxmlLoader.getController();
@@ -140,7 +141,7 @@ public class ChatPage {
                 FXMLLoader chatViewFxml = new FXMLLoader(App.class.getResource("views/ChatView.fxml"));
                 AnchorPane anchorPane = chatViewFxml.load();
                 ChatView controllerView = chatViewFxml.getController();
-                controllerView.setTitle(title);
+                controllerView.setData(chatId, title);
                 chatPane.getChildren().setAll(anchorPane);
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
@@ -168,6 +169,8 @@ public class ChatPage {
 
     @FXML
     void settingsPressed(MouseEvent event) {
-
+        User.getChats().stream().forEach(chat -> {
+            System.out.println(chat.getId() + " | "+ chat.getTitle());
+        });
     }
 }
