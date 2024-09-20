@@ -53,7 +53,7 @@ public class SignInPage {
             String password = passwordBox.getText();
             String email = emailBox.getText();
             if (ValidationUtils.validateUsername(username) && ValidationUtils.validatePassword(password) && ValidationUtils.validateEmail(email)) {
-                SignInUser signInMessage = new SignInUser(Operation.CREATE_USER.name(), username, password, email);
+                SignInUser signInMessage = new SignInUser(Operation.CREATE_USER.name(), username, email, password);
                 JsonNode response = MessageSender.getResponse(signInMessage);
                 String title = response.get("title").asText();
                 String body = response.get("body").asText();

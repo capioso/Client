@@ -2,19 +2,18 @@ package networkstwo.capstone.controllers.views;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import networkstwo.capstone.messages.CreateChat;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.MessageSender;
+
+import java.util.UUID;
 
 import static networkstwo.capstone.utils.ValidationUtils.validateUsername;
 import static networkstwo.capstone.utils.ScreenUtils.showAlert;
@@ -27,7 +26,7 @@ public class UsernameView {
     @FXML
     private TextField usernameText;
 
-    private String data = "";
+    private UUID data = null;
 
     @FXML
     public void initialize() throws Exception {
@@ -44,18 +43,18 @@ public class UsernameView {
     void okPressed(MouseEvent event) {
         try {
             String username = usernameText.getText();
-            String title = textField.getText();
-            if (!validateUsername(username) || !validateUsername(title)) {
+            if (!validateUsername(username)) {
                 throw new Exception("Bad username or title");
             }
             if (username.equals(User.getUsername())){
                 throw new Exception("You can not add yourself");
             }
-            if (User.getTitles().contains(username)){
+            if (User.getChats().contains(username)){
                 throw new Exception("Title already added");
             }
 
-            CreateChat getMessage = new CreateChat(Operation.CREATE_CHAT.name(), title, username, User.getToken());
+            UUID chatId = UUID.randomUUID();
+            CreateChat getMessage = new CreateChat(User.getToken(), Operation.CREATE_CHAT.name(), chatId, username);
             JsonNode response = MessageSender.getResponse(getMessage);
 
             String responseTitle = response.get("title").asText();
@@ -64,7 +63,7 @@ public class UsernameView {
             if (!responseTitle.equals("message")) {
                 throw new Exception(body);
             }
-            this.data = title;
+            this.data = chatId;
             Stage stage = (Stage) textField.getScene().getWindow();
             stage.close();
         } catch (Exception e) {
@@ -78,7 +77,8 @@ public class UsernameView {
         usernameText.textProperty().addListener(textFieldListener);
     }
 
-    public String getData() {
+    public UUID
+    getData() {
         return data;
     }
 

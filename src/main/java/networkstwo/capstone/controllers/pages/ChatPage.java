@@ -6,7 +6,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -18,7 +17,9 @@ import networkstwo.capstone.App;
 import networkstwo.capstone.controllers.views.ChatView;
 import networkstwo.capstone.controllers.views.ContactView;
 import networkstwo.capstone.controllers.views.UsernameView;
-import networkstwo.capstone.messages.GetChat;
+import networkstwo.capstone.messages.GetChats;
+import networkstwo.capstone.messages.GetSingleChat;
+import networkstwo.capstone.models.Chat;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.EventBus;
@@ -27,6 +28,7 @@ import networkstwo.capstone.services.MessageSender;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class ChatPage {
     @FXML
@@ -52,8 +54,9 @@ public class ChatPage {
         ChangeListener<String> eventBusListener = (obs, oldMessage, newMessage) -> {
             Platform.runLater(() -> {
                 try {
-                    User.getTitles().add(newMessage);
-                    addContactView(newMessage);
+                    String title = getTitleByChatId(newMessage);
+                    User.getChats().add(new Chat(UUID.fromString(newMessage), title));
+                    addContactView(title);
                 } catch (Exception e) {
                     System.out.println("Problems with event bus: " + e.getMessage());
                 }
@@ -65,33 +68,54 @@ public class ChatPage {
     @FXML
     void addChatPressed(MouseEvent event) {
         try {
-            String chatCreated = openUsernameView();
-            if (chatCreated.isBlank() || chatCreated.isEmpty()) {
-                return;
+            UUID chatId = openUsernameView();
+            if (chatId != null) {
+                String newTitle = getTitleByChatId(chatId.toString());
+                if (newTitle != null){
+                    User.getChats().add(new Chat(chatId, newTitle));
+                }else{
+                    System.out.println("Problem adding chat");
+                }
             }
-            addContactView(chatCreated);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     public void updateUserTitles() throws Exception{
-        GetChat getChatMessage = new GetChat(Operation.GET_CHAT.name(), User.getToken());
-        JsonNode response = MessageSender.getResponse(getChatMessage);
+        JsonNode response = MessageSender.getResponse(new GetChats(User.getToken(), Operation.GET_CHATS.name()));
         String title = response.get("title").asText();
         String body = response.get("body").asText();
         if (title.equals("message")) {
-            List<String> titles = stringToList(body);
-            User.setTitles(titles);
+            List<String> chatIds = stringToList(body);
+            chatIds.forEach(chatId -> {
+                String newTitle = getTitleByChatId(chatId);
+                if (newTitle != null){
+                    User.getChats().add(new Chat(UUID.fromString(chatId), newTitle));
+                }else{
+                    System.out.println("Problem adding chat");
+                }
+            });
             reLoadContacts();
         }
     }
 
+    private String getTitleByChatId(String chatId){
+        UUID idConverted = UUID.fromString(chatId);
+        JsonNode newResponse = MessageSender.getResponse(
+                new GetSingleChat(User.getToken(), Operation.GET_SINGLE_CHAT.name(), idConverted)
+        );
+        if (newResponse.get("title").asText().equals("message")){
+            return newResponse.get("body").asText();
+        }
+        return null;
+    }
+
     public void reLoadContacts() throws Exception {
         chatsBox.getChildren().clear();
-        User.getTitles().forEach(newTitle -> {
+        User.getChats().forEach(chat -> {
             try {
-                addContactView(newTitle);
+                addContactView(chat.getTitle());
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
@@ -125,7 +149,7 @@ public class ChatPage {
         chatsBox.getChildren().add(pane);
     }
 
-    private String openUsernameView() throws Exception {
+    private UUID openUsernameView() throws Exception {
         FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("views/UsernameView.fxml"));
         Stage dialogStage = new Stage();
         dialogStage.setTitle("Enter Chat's title & Username");

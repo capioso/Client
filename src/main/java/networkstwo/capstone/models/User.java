@@ -1,22 +1,20 @@
 package networkstwo.capstone.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
     private static String token;
     private static String username;
     private static String email;
-    private static String password;
+    private static List<Chat> chats = new ArrayList<>();
 
-    public static List<String> getTitles() {
-        return titles;
+
+
+    public static List<Chat> getChats() {
+        return chats;
     }
 
-    public static void setTitles(List<String> titles) {
-        User.titles = titles;
-    }
-
-    private static List<String> titles;
 
     public static String getEmail() {
         return email;
@@ -32,14 +30,6 @@ public class User {
 
     public static void setToken(String token) {
         User.token = token;
-    }
-
-    public static String getPassword() {
-        return User.password;
-    }
-
-    public static void setPassword(String password) {
-        User.password = password;
     }
 
     public static String getUsername() {

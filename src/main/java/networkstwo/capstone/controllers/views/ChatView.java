@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import networkstwo.capstone.App;
-import networkstwo.capstone.messages.GetChat;
 import networkstwo.capstone.messages.SendMessage;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
