@@ -47,11 +47,14 @@ public class ServerConfig {
                 ObjectMapper objectMapper = new ObjectMapper();
                 while ((response = in.readLine()) != null) {
                     JsonNode node = objectMapper.readTree(response);
-                    if (node.get("title").asText().equals("chatUpdate")){
-                        String operation = node.get("body").asText();
-                        EventBus.getInstance().sendMessage(operation);
-                    }else{
-                        responseQueue.offer(node);
+                    String title = node.get("title").asText();
+                    switch (title) {
+                        case "chatUpdate" -> {
+                            String operation = node.get("body").asText();
+                            EventBus.getInstance().sendMessage(operation);
+                        }
+                        case "messageUpdate" -> System.out.println(node.get("body").asText());
+                        default -> responseQueue.offer(node);
                     }
                 }
             } catch (IOException e) {
