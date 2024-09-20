@@ -50,6 +50,7 @@ public class ServerConfig {
                     String title = node.get("title").asText();
                     switch (title) {
                         case "chatUpdate" -> {
+                            System.out.println(node.get("body").asText());
                             String operation = node.get("body").asText();
                             EventBus.getInstance().sendMessage(operation);
                         }
