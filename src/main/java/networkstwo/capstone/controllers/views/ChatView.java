@@ -59,6 +59,7 @@ public class ChatView {
         textField.setFont(textFieldFont);
 
         EventBus.getInstance().addListener((observable, oldEvent, newEvent) -> {
+            System.out.println("PREVIO A LOAD");
             if ("loadMessage".equals(newEvent.getType())) {
                 Platform.runLater(() -> {
                     try {
@@ -99,6 +100,7 @@ public class ChatView {
 
                 String title = response.get("title").asText();
                 String body = response.get("body").asText();
+
                 if (title.equals("message")) {
                     UUID messageId = UUID.fromString(body);
                     if (thisChat != null){

@@ -74,13 +74,11 @@ public class ChatPage {
                             .filter(chat -> chat.getId().equals(UUID.fromString(chatId)))
                             .findFirst()
                             .orElse(null);
+
                     if (chatFromMessage != null){
                         chatFromMessage.getMessages().add(new Message(UUID.fromString(messageId), username, content));
                         EventBus.getInstance().sendEvent(new Event("loadMessage", messageId));
                     }
-
-
-
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                 }
