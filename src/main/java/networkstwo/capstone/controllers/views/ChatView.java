@@ -44,15 +44,34 @@ public class ChatView {
 
     private UUID chatId;
 
+    private Chat thisChat;
+
     @FXML
     public void initialize() {
         Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 22);
         titleText.setFont(titleFont);
         Font textFieldFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-SemiBoldItalic.ttf"), 13);
         textField.setFont(textFieldFont);
+
         EventBus.getInstance().addListener((observable, oldEvent, newEvent) -> {
-            if ("messageUpdate".equals(newEvent.getType())){
-                System.out.println(newEvent.getBody());
+            if ("loadMessage".equals(newEvent.getType())) {
+                Platform.runLater(() -> {
+                    try {
+                        Message messageToAdd = thisChat.getMessages().stream()
+                                .filter(message -> message.getId().equals(UUID.fromString(newEvent.getBody())))
+                                .findFirst()
+                                .orElse(null);
+                        if (messageToAdd != null){
+                            if (messageToAdd.getSender().equals(User.getUsername())){
+                                addMessageView(true, User.getUsername(),messageToAdd.getBinaryContent());
+                            }else{
+                                addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent());
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Problems with event bus: " + e.getMessage());
+                    }
+                });
             }
         });
     }
@@ -74,10 +93,6 @@ public class ChatView {
                 String body = response.get("body").asText();
                 if (title.equals("message")) {
                     UUID messageId = UUID.fromString(body);
-                    Chat thisChat = User.getChats().stream()
-                            .filter(chat -> chat.getId().equals(this.chatId))
-                            .findFirst()
-                            .orElse(null);
                     if (thisChat != null){
                         thisChat.getMessages().add(new Message(messageId, User.getUsername(), binaryContent));
                         addMessageView(true, User.getUsername(), content);
@@ -94,7 +109,9 @@ public class ChatView {
         }
     }
 
-    private void addMessageView(boolean isOwn, String username, String content) throws Exception {
+    private void addMessageView(boolean isOwn, String username, String binaryContent) throws Exception {
+        byte[] decodedBytes = Base64.getDecoder().decode(binaryContent);
+
         FXMLLoader messageView;
         if (isOwn) {
             messageView = new FXMLLoader(App.class.getResource("views/MessageView.fxml"));
@@ -105,7 +122,7 @@ public class ChatView {
 
         MessageView controller = messageView.getController();
         controller.setUsernameTitle(username);
-        controller.setMessageBody(content);
+        controller.setMessageBody(new String(decodedBytes));
         messagesBox.getChildren().add(anchorPane);
     }
 
@@ -117,6 +134,12 @@ public class ChatView {
     public void setData(UUID chatId, String title) {
         this.chatId = chatId;
         titleText.setText(title);
+
+        thisChat = User.getChats().stream()
+                .filter(chat -> chat.getId().equals(this.chatId))
+                .findFirst()
+                .orElse(null);
+
         loadMessages();
     }
 
@@ -128,12 +151,10 @@ public class ChatView {
             List<Message> messagesList = stringToList(body);
             messagesList.forEach(message -> {
                 try {
-                    byte[] decodedBytes = Base64.getDecoder().decode(message.getBinaryContent());
-                    String decodedMessage =  new String(decodedBytes);
                     if (message.getSender().equals(User.getUsername())){
-                        addMessageView(true, User.getUsername(),decodedMessage);
+                        addMessageView(true, User.getUsername(),message.getBinaryContent());
                     }else{
-                        addMessageView(false, message.getSender(), decodedMessage);
+                        addMessageView(false, message.getSender(), message.getBinaryContent());
                     }
                 }catch (Exception e){
                     System.out.println(e.getMessage());

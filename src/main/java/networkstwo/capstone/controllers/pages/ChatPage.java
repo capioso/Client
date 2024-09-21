@@ -18,16 +18,11 @@ import networkstwo.capstone.controllers.views.ContactView;
 import networkstwo.capstone.controllers.views.UsernameView;
 import networkstwo.capstone.messages.GetChats;
 import networkstwo.capstone.messages.GetSingleChat;
-import networkstwo.capstone.models.Chat;
-import networkstwo.capstone.models.Operation;
-import networkstwo.capstone.models.User;
+import networkstwo.capstone.models.*;
 import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ChatPage {
     @FXML
@@ -64,7 +59,22 @@ public class ChatPage {
                 });
             }
             if ("messageUpdate".equals(newEvent.getType())){
-                System.out.println(newEvent.getBody());
+                String[] response = newEvent.getBody().split(",");
+                UUID chatId = UUID.fromString(response[0]);
+                UUID messageId = UUID.fromString(response[1]);
+                String sender = response[2];
+                String binaryContent = response[3];
+                Optional<Chat> chatFromMessageOpt = User.getChats().stream()
+                        .filter(chat -> chat.getId().equals(chatId))
+                        .findFirst();
+
+                if (chatFromMessageOpt.isPresent()) {
+                    Chat chatFromMessage = chatFromMessageOpt.get();
+                    chatFromMessage.getMessages().add(new Message(messageId, sender, binaryContent));
+                    EventBus.getInstance().sendEvent(new Event("loadMessage", response[0]));
+                } else {
+                    System.out.println("Chat not found for chatId: " + chatId);
+                }
             }
         });
     }
