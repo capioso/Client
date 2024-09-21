@@ -92,15 +92,17 @@ public class ChatView {
             try {
                 byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
                 String binaryContent = Arrays.toString(bytes);
+
                 SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent);
                 JsonNode response = MessageSender.getResponse(sendMessage);
+
                 String title = response.get("title").asText();
                 String body = response.get("body").asText();
                 if (title.equals("message")) {
                     UUID messageId = UUID.fromString(body);
                     if (thisChat != null){
                         thisChat.getMessages().add(new Message(messageId, User.getUsername(), binaryContent));
-                        addMessageView(true, User.getUsername(), content);
+                        addMessageView(true, User.getUsername(), binaryContent);
                         textField.setText("");
                     }else{
                         throw new Exception("thisChat is null");
