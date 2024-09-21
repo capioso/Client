@@ -98,7 +98,7 @@ public class ChatView {
 
     public void setData(UUID chatId, String title) {
         this.chatId = chatId;
-        titleText.setText(title);
+        titleText.setText(title + " | " + chatId);
     }
 
 }
