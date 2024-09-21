@@ -23,8 +23,12 @@ import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static networkstwo.capstone.utils.BinaryUtil.binaryToString;
+import static networkstwo.capstone.utils.BinaryUtil.stringToBinary;
 
 public class ChatView {
 
@@ -87,8 +91,7 @@ public class ChatView {
         if (event.getCode() == KeyCode.ENTER) {
             String content = textField.getText();
             try {
-                byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
-                String binaryContent = Base64.getEncoder().encodeToString(bytes);
+                String binaryContent = stringToBinary(content);
                 SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent);
                 JsonNode response = MessageSender.getResponse(sendMessage);
                 String title = response.get("title").asText();
@@ -112,9 +115,7 @@ public class ChatView {
     }
 
     private void addMessageView(boolean isOwn, String username, String binaryContent) throws Exception {
-        byte[] decodedBytes = Base64.getDecoder().decode(binaryContent);
-
-        FXMLLoader messageView;
+       FXMLLoader messageView;
         if (isOwn) {
             messageView = new FXMLLoader(App.class.getResource("views/MessageView.fxml"));
         } else {
@@ -124,7 +125,7 @@ public class ChatView {
 
         MessageView controller = messageView.getController();
         controller.setUsernameTitle(username);
-        controller.setMessageBody(new String(decodedBytes, StandardCharsets.UTF_8));
+        controller.setMessageBody(binaryToString(binaryContent));
         messagesBox.getChildren().add(anchorPane);
     }
 
