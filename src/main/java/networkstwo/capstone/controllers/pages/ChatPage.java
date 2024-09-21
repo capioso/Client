@@ -59,22 +59,7 @@ public class ChatPage {
                 });
             }
             if ("messageUpdate".equals(newEvent.getType())){
-                String[] response = newEvent.getBody().split(",");
-                UUID chatId = UUID.fromString(response[0]);
-                UUID messageId = UUID.fromString(response[1]);
-                String sender = response[2];
-                String binaryContent = response[3];
-                Optional<Chat> chatFromMessageOpt = User.getChats().stream()
-                        .filter(chat -> chat.getId().equals(chatId))
-                        .findFirst();
-
-                if (chatFromMessageOpt.isPresent()) {
-                    Chat chatFromMessage = chatFromMessageOpt.get();
-                    chatFromMessage.getMessages().add(new Message(messageId, sender, binaryContent));
-                    EventBus.getInstance().sendEvent(new Event("loadMessage", response[0]));
-                } else {
-                    System.out.println("Chat not found for chatId: " + chatId);
-                }
+                System.out.println(newEvent.getBody());
             }
         });
     }
@@ -83,7 +68,6 @@ public class ChatPage {
     void addChatPressed(MouseEvent event) {
         try {
             UUID chatId = openUsernameView();
-            System.out.println("Chat Id: " + chatId);
             if (chatId != null) {
                 String newTitle = getTitleByChatId(chatId.toString());
                 if (newTitle != null){
