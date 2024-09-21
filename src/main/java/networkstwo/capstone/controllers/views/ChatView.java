@@ -1,6 +1,7 @@
 package networkstwo.capstone.controllers.views;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -178,18 +179,22 @@ public class ChatView {
     }
 
     private List<Message> stringToList(String body) {
-        String[] parts = body.substring(1, body.length() - 1).split(",\\s*");
-
         List<Message> messages = new ArrayList<>();
-        for (int i = 0; i < parts.length; i += 3) {
-            try {
-                UUID id = UUID.fromString(parts[i]);
-                String sender = parts[i + 1];
-                String content = parts[i + 2];
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            JsonNode rootNode = objectMapper.readTree(body);
+            JsonNode messagesNode = rootNode.path("messages");
+
+            for (JsonNode messageNode : messagesNode) {
+                UUID id = UUID.fromString(messageNode.path("id").asText());
+                String sender = messageNode.path("sender").asText();
+                String content = messageNode.path("content").asText();
+
                 messages.add(new Message(id, sender, content));
-            }catch (Exception e){
-                System.out.println("Error parsing string to list of messages: " + e.getMessage());
             }
+        } catch (Exception e) {
+            System.out.println("Error parsing string to list of messages: " + e.getMessage());
         }
 
         return messages;
