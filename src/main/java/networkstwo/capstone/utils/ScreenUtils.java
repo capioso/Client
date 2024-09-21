@@ -7,7 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import networkstwo.capstone.App;
 
-public class Screen {
+public class ScreenUtils {
 
     public static void centerOnScreen(Stage stage) {
         javafx.stage.Screen screen = javafx.stage.Screen.getPrimary();
@@ -26,7 +26,7 @@ public class Screen {
 
     public static void changeScreen(Stage stage, String fxml) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml));
+            FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("pages/" + fxml));
             Parent root = fxmlLoader.load();
             Scene scene = new Scene(root);
             stage.setTitle("CapChat");
@@ -43,8 +43,8 @@ public class Screen {
         }
     }
 
-    public static void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    public static void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
         alert.setTitle("Information");
         alert.setHeaderText(title);
         alert.setContentText(content);

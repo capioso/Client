@@ -1,4 +1,4 @@
-package networkstwo.capstone.controllers;
+package networkstwo.capstone.controllers.pages;
 
 import javafx.fxml.FXML;
 import javafx.scene.text.Font;

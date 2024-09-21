@@ -1,0 +1,21 @@
+.base {
+    -fx-border-color: #5e341e;
+    -fx-border-width: 2;
+    -fx-background-color: #D7BFAE;
+}
+
+.rounded {
+    -fx-border-color: #5e341e;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-text-fill: #5e341e;
+}
+
+.button {
+    -fx-border-color: #5e341e;
+    -fx-background-color: #5e341e;
+    -fx-border-width: 2;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+}

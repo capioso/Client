@@ -1,0 +1,52 @@
+.root {
+    -fx-padding: 0;
+    -fx-margin: 0;
+    -fx-font-family: 'Jost', sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #8C4A2F, #D7BFAE, #8C4A2F);
+    -fx-alignment: center;
+}
+
+.contactTitle {
+    -fx-background-color: #8C4A2F;
+}
+
+#chatsBox {
+    -fx-background-color: #8C4A2F;
+    -fx-spacing: 5;
+    -fx-padding: 0 0 0 4;
+}
+
+.scroll-pane .scroll-bar:vertical {
+    -fx-pref-width: 10;
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .track-background {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #4f2b1a;
+    -fx-cursor: hand;
+}
+
+.contactsBox {
+    -fx-background-color: #D7BFAE;
+}
+
+.buttons {
+    -fx-background-color: #8C4A2F;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}
+
+.title {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+}

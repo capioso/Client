@@ -1,0 +1,8 @@
+.header {
+    -fx-background-color: #5e341e;
+    -fx-border-color: #5e341e;
+    -fx-border-width: 2;
+}
+.container {
+    -fx-background-color: #D7BFAE;
+}

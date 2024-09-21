@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="50.0" maxWidth="400.0" minHeight="50.0" minWidth="400.0" prefHeight="50.0" prefWidth="400.0" style="-fx-background-color: transparent;" stylesheets="@../stylesheet/messageView.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="networkstwo.capstone.controllers.views.MessageView">
+   <children>
+      <AnchorPane layoutX="-76.0" layoutY="-189.0" maxHeight="50.0" maxWidth="250.0" minHeight="50.0" minWidth="250.0" prefHeight="50.0" prefWidth="250.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane blendMode="SRC_ATOP" maxHeight="15.0" maxWidth="250.0" minHeight="15.0" minWidth="250.0" prefHeight="15.0" prefWidth="250.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Text fx:id="usernameTitle" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Ausernamep" wrappingWidth="213.2392578125" AnchorPane.leftAnchor="17.0" AnchorPane.topAnchor="3.0">
+                     <font>
+                        <Font name="Consolas Bold Italic" size="10.0" />
+                     </font>
+                  </Text>
+               </children>
+            </AnchorPane>
+            <ScrollPane blendMode="SCREEN" hbarPolicy="NEVER" maxWidth="250.0" minWidth="250.0" prefHeight="20.0" prefWidth="250.0" styleClass="header" vbarPolicy="NEVER" AnchorPane.leftAnchor="-2.0" AnchorPane.topAnchor="15.0">
+               <content>
+                  <VBox maxWidth="250.0" minWidth="250.0" prefWidth="250.0" styleClass="header">
+                     <children>
+                        <AnchorPane maxHeight="5.0" maxWidth="250.0" minHeight="5.0" minWidth="250.0" prefHeight="5.0" prefWidth="250.0" />
+                        <Text fx:id="messageBody" fill="WHITE" lineSpacing="4.0" stroke="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="message text for poekmons jajajaja oh yeah" textOrigin="CENTER" translateX="7.0" wrappingWidth="232.0">
+                           <font>
+                              <Font name="Consolas Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <AnchorPane maxHeight="7.0" maxWidth="250.0" minHeight="7.0" minWidth="250.0" prefHeight="7.0" prefWidth="250.0" />
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </children>
+         <styleClass>
+            <String fx:value="header" />
+            <String fx:value="round" />
+         </styleClass>
+      </AnchorPane>
+   </children>
+</AnchorPane>

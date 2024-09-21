@@ -1,0 +1,17 @@
+.root {
+    -fx-padding: 0;
+    -fx-margin: 0;
+    -fx-background-color: linear-gradient(to bottom, #D7BFAE, #8C4A2F, #D7BFAE);
+    -fx-alignment: center;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+    -fx-border-color: #5e341e;
+    -fx-border-width: 2;
+}
+
+.rounded {
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #5e341e;
+    -fx-border-width: 2;
+}

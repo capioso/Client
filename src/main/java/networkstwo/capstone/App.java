@@ -2,20 +2,22 @@ package networkstwo.capstone;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import networkstwo.capstone.services.ServerConnection;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
-import static networkstwo.capstone.utils.Screen.changeScreen;
+import static networkstwo.capstone.utils.ScreenUtils.changeScreen;
+import static networkstwo.capstone.utils.ScreenUtils.showAlert;
 
 public class App extends Application {
     @Override
     public void start(Stage stage) {
         changeScreen(stage, "WelcomePage.fxml");
 
-        ServerConnection serverConnection = new ServerConnection("34.130.54.17", 10852);
+        ServerConnection serverConnection = ServerConnection.getInstance();
 
         CompletableFuture<Boolean> pingFuture = CompletableFuture.supplyAsync(serverConnection::ping);
 
@@ -24,7 +26,8 @@ public class App extends Application {
                 System.out.println("Connected to server");
                 changeScreen(stage, "LogInPage.fxml");
             } else {
-                System.out.println("Could not connect to server");
+                showAlert(Alert.AlertType.INFORMATION,"Server Error", "Could not connect to server");
+                stage.close();
             }
         })).exceptionally(ex -> {
             Platform.runLater(() -> {
