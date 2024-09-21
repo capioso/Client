@@ -51,13 +51,8 @@ public class ServerConfig {
                     String title = node.get("title").asText();
                     String operation = node.get("body").asText();
                     switch (title) {
-
-                        case "chatUpdate" -> {
-                            EventBus.getInstance().sendEvent(new Event("chatUpdate", operation));
-                        }
-                        case "messageUpdate" -> {
-                            EventBus.getInstance().sendEvent(new Event("messageUpdate", operation));
-                        }
+                        case "chatUpdate" -> EventBus.getInstance().sendEvent(new Event("chatUpdate", operation));
+                        case "messageUpdate" -> EventBus.getInstance().sendEvent(new Event("messageUpdate", operation));
                         default -> responseQueue.offer(node);
                     }
                 }

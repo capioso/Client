@@ -1,6 +1,7 @@
 package networkstwo.capstone.controllers.views;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TextField;
@@ -19,12 +20,10 @@ import networkstwo.capstone.models.Chat;
 import networkstwo.capstone.models.Message;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
+import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ChatView {
 
@@ -51,6 +50,11 @@ public class ChatView {
         titleText.setFont(titleFont);
         Font textFieldFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-SemiBoldItalic.ttf"), 13);
         textField.setFont(textFieldFont);
+        EventBus.getInstance().addListener((observable, oldEvent, newEvent) -> {
+            if ("messageUpdate".equals(newEvent.getType())){
+                System.out.println(newEvent.getBody());
+            }
+        });
     }
 
     @FXML
@@ -112,7 +116,8 @@ public class ChatView {
 
     public void setData(UUID chatId, String title) {
         this.chatId = chatId;
-        titleText.setText(title + " | " + chatId);
+        titleText.setText(title);
+        loadMessages();
     }
 
     public void loadMessages() {
@@ -120,11 +125,13 @@ public class ChatView {
         JsonNode response = MessageSender.getResponse(getMesage);
         if (response.get("title").asText().equals("message")) {
             String body = response.get("body").asText();
-            stringToList(body).forEach(message -> {
+            List<Message> messagesList = stringToList(body);
+            messagesList.forEach(message -> {
                 try {
-                    String decodedMessage = new String(Base64.getDecoder().decode(message.getBinaryContent()));
+                    byte[] decodedBytes = Base64.getDecoder().decode(message.getBinaryContent());
+                    String decodedMessage =  new String(decodedBytes);
                     if (message.getSender().equals(User.getUsername())){
-                        addMessageView(true, User.getUsername(), decodedMessage);
+                        addMessageView(true, User.getUsername(),decodedMessage);
                     }else{
                         addMessageView(false, message.getSender(), decodedMessage);
                     }
@@ -145,6 +152,7 @@ public class ChatView {
             String content = parts[i + 2];
             messages.add(new Message(id, sender, content));
         }
+
         return messages;
     }
 }

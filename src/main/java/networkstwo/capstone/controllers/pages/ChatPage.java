@@ -73,6 +73,7 @@ public class ChatPage {
     void addChatPressed(MouseEvent event) {
         try {
             UUID chatId = openUsernameView();
+            System.out.println("Chat Id: " + chatId);
             if (chatId != null) {
                 String newTitle = getTitleByChatId(chatId.toString());
                 if (newTitle != null){
@@ -81,6 +82,8 @@ public class ChatPage {
                 }else{
                     System.out.println("Problem adding chat");
                 }
+            }else{
+                throw new RuntimeException("Chat Id is null");
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -94,18 +97,22 @@ public class ChatPage {
         if (title.equals("message")) {
             List<String> chatIds = stringToList(body);
             chatIds.forEach(chatId -> {
-                String newTitle = getTitleByChatId(chatId);
-                if (newTitle != null){
-                    User.getChats().add(new Chat(UUID.fromString(chatId), newTitle));
-                }else{
-                    System.out.println("Problem adding chat");
+                try {
+                    String newTitle = getTitleByChatId(chatId);
+                    if (newTitle != null){
+                        User.getChats().add(new Chat(UUID.fromString(chatId), newTitle));
+                    }else{
+                        System.out.println("Problem adding chat");
+                    }
+                }catch (Exception e){
+                    System.out.println("Problem updating user titles");
                 }
             });
             reLoadContacts();
         }
     }
 
-    private String getTitleByChatId(String chatId){
+    private String getTitleByChatId(String chatId) throws Exception{
         UUID idConverted = UUID.fromString(chatId);
         JsonNode newResponse = MessageSender.getResponse(
                 new GetSingleChat(User.getToken(), Operation.GET_SINGLE_CHAT.name(), idConverted)
@@ -113,7 +120,7 @@ public class ChatPage {
         if (newResponse.get("title").asText().equals("message")){
             return newResponse.get("body").asText();
         }
-        return null;
+        throw new Exception("No chat recovered");
     }
 
     public void reLoadContacts() throws Exception {
@@ -146,7 +153,6 @@ public class ChatPage {
                 AnchorPane anchorPane = chatViewFxml.load();
                 ChatView controllerView = chatViewFxml.getController();
                 controllerView.setData(chatId, title);
-                controllerView.loadMessages();
                 chatPane.getChildren().setAll(anchorPane);
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());

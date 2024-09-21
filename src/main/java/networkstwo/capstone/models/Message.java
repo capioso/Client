@@ -3,9 +3,9 @@ package networkstwo.capstone.models;
 import java.util.UUID;
 
 public class Message {
-    private UUID id;
-    private String sender;
-    private String binaryContent;
+    private final UUID id;
+    private final String sender;
+    private final String binaryContent;
 
     public Message(UUID id, String sender, String binaryContent) {
         this.id = id;
