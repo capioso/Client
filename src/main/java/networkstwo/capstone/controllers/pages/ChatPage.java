@@ -54,9 +54,10 @@ public class ChatPage {
             if ("chatUpdate".equals(newEvent.getType())) {
                 Platform.runLater(() -> {
                     try {
+                        UUID chatId = UUID.fromString(newEvent.getBody());
                         String title = getTitleByChatId(newEvent.getBody());
-                        User.getChats().add(new Chat(UUID.fromString(newEvent.getBody()), title));
-                        addContactView(UUID.fromString(newEvent.getBody()), title);
+                        User.getChats().add(new Chat(chatId, title));
+                        addContactView(chatId, title);
                     } catch (Exception e) {
                         System.out.println("Problems with event bus: " + e.getMessage());
                     }
