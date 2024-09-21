@@ -1,6 +1,7 @@
 package networkstwo.capstone.controllers.pages;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,7 +60,30 @@ public class ChatPage {
                 });
             }
             if ("messageUpdate".equals(newEvent.getType())){
-                System.out.println(newEvent.getBody());
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+
+                    JsonNode rootNode = objectMapper.readTree(newEvent.getBody());
+
+                    String chatId = rootNode.path("chatId").asText();
+                    String messageId = rootNode.path("messageId").asText();
+                    String username = rootNode.path("username").asText();
+                    String content = rootNode.path("content").asText();
+
+                    Chat chatFromMessage = User.getChats().stream()
+                            .filter(chat -> chat.getId().equals(UUID.fromString(chatId)))
+                            .findFirst()
+                            .orElse(null);
+                    if (chatFromMessage != null){
+                        chatFromMessage.getMessages().add(new Message(UUID.fromString(messageId), username, content));
+                        EventBus.getInstance().sendEvent(new Event("loadMessage", messageId));
+                    }
+
+
+
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
             }
         });
     }
