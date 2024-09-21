@@ -11,5 +11,6 @@ public enum Operation {
     UPDATE_CHAT,
     DELETE_CHAT,
     SEND_MESSAGE,
+    GET_MESSAGES_BY_CHAT,
     LOGIN_USER
 }

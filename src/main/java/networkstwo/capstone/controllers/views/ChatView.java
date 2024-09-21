@@ -13,11 +13,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import networkstwo.capstone.App;
+import networkstwo.capstone.messages.GetMessagesByChat;
 import networkstwo.capstone.messages.SendMessage;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.MessageSender;
 
+import java.util.Base64;
 import java.util.UUID;
 
 public class ChatView {
@@ -45,6 +47,9 @@ public class ChatView {
         titleText.setFont(titleFont);
         Font textFieldFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-SemiBoldItalic.ttf"), 13);
         textField.setFont(textFieldFont);
+        GetMessagesByChat getMesage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
+        JsonNode response = MessageSender.getResponse(getMesage);
+        System.out.println(response);
     }
 
     @FXML
@@ -57,7 +62,8 @@ public class ChatView {
         if (event.getCode() == KeyCode.ENTER) {
             String content = textField.getText();
             try {
-                SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, content);
+                String binaryContent = Base64.getEncoder().encodeToString(content.getBytes());
+                SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent);
                 JsonNode response = MessageSender.getResponse(sendMessage);
                 String title = response.get("title").asText();
                 if (title.equals("message")){

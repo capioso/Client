@@ -1,14 +1,23 @@
 package networkstwo.capstone.models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Chat {
     private UUID id;
     private String title;
 
+    private List<Message> messages;
+
     public Chat(UUID id, String title) {
         this.id = id;
         this.title = title;
+    }
+
+
+    public List<Message> getMessages() {
+        return messages;
     }
 
     public UUID getId() {
