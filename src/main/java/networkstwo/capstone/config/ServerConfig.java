@@ -2,6 +2,7 @@ package networkstwo.capstone.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import networkstwo.capstone.models.Event;
 import networkstwo.capstone.services.EventBus;
 
 import javax.net.ssl.SSLSocket;
@@ -48,12 +49,15 @@ public class ServerConfig {
                 while ((response = in.readLine()) != null) {
                     JsonNode node = objectMapper.readTree(response);
                     String title = node.get("title").asText();
+                    String operation = node.get("body").asText();
                     switch (title) {
+
                         case "chatUpdate" -> {
-                            String operation = node.get("body").asText();
-                            EventBus.getInstance().sendMessage(operation);
+                            EventBus.getInstance().sendEvent(new Event("chatUpdate", operation));
                         }
-                        case "messageUpdate" -> System.out.println(node.get("body").asText());
+                        case "messageUpdate" -> {
+                            EventBus.getInstance().sendEvent(new Event("messageUpdate", operation));
+                        }
                         default -> responseQueue.offer(node);
                     }
                 }

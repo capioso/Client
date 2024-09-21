@@ -15,11 +15,15 @@ import javafx.scene.text.Text;
 import networkstwo.capstone.App;
 import networkstwo.capstone.messages.GetMessagesByChat;
 import networkstwo.capstone.messages.SendMessage;
+import networkstwo.capstone.models.Chat;
+import networkstwo.capstone.models.Message;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.MessageSender;
 
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 
 public class ChatView {
@@ -63,21 +67,34 @@ public class ChatView {
                 SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent);
                 JsonNode response = MessageSender.getResponse(sendMessage);
                 String title = response.get("title").asText();
-                if (title.equals("message")){
-                    addMessageView(true, User.getUsername(), content);
-                    textField.setText("");
+                String body = response.get("body").asText();
+                if (title.equals("message")) {
+                    UUID messageId = UUID.fromString(body);
+                    Chat thisChat = User.getChats().stream()
+                            .filter(chat -> chat.getId().equals(this.chatId))
+                            .findFirst()
+                            .orElse(null);
+                    if (thisChat != null){
+                        thisChat.getMessages().add(new Message(messageId, User.getUsername(), binaryContent));
+                        addMessageView(true, User.getUsername(), content);
+                        textField.setText("");
+                    }else{
+                        throw new Exception("thisChat is null");
+                    }
+                }else{
+                    throw new Exception(body);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
     }
 
-    private void addMessageView(boolean isOwn, String username, String content) throws Exception{
+    private void addMessageView(boolean isOwn, String username, String content) throws Exception {
         FXMLLoader messageView;
-        if (isOwn){
+        if (isOwn) {
             messageView = new FXMLLoader(App.class.getResource("views/MessageView.fxml"));
-        }else{
+        } else {
             messageView = new FXMLLoader(App.class.getResource("views/OtherMessageView.fxml"));
         }
         AnchorPane anchorPane = messageView.load();
@@ -98,9 +115,36 @@ public class ChatView {
         titleText.setText(title + " | " + chatId);
     }
 
-    public void loadMessages(){
+    public void loadMessages() {
         GetMessagesByChat getMesage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
         JsonNode response = MessageSender.getResponse(getMesage);
-        System.out.println(response);
+        if (response.get("title").asText().equals("message")) {
+            String body = response.get("body").asText();
+            stringToList(body).forEach(message -> {
+                try {
+                    String decodedMessage = new String(Base64.getDecoder().decode(message.getBinaryContent()));
+                    if (message.getSender().equals(User.getUsername())){
+                        addMessageView(true, User.getUsername(), decodedMessage);
+                    }else{
+                        addMessageView(false, message.getSender(), decodedMessage);
+                    }
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
+            });
+        }
+    }
+
+    private List<Message> stringToList(String body) {
+        String[] parts = body.substring(1, body.length() - 1).split(",\\s*");
+
+        List<Message> messages = new ArrayList<>();
+        for (int i = 0; i < parts.length; i += 3) {
+            UUID id = UUID.fromString(parts[i]);
+            String sender = parts[i + 1];
+            String content = parts[i + 2];
+            messages.add(new Message(id, sender, content));
+        }
+        return messages;
     }
 }

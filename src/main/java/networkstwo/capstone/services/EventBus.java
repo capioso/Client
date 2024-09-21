@@ -1,10 +1,12 @@
 package networkstwo.capstone.services;
 
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import networkstwo.capstone.models.Event;
 
 public class EventBus {
     private static final EventBus instance = new EventBus();
-    private final SimpleObjectProperty<String> message = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<Event> event = new SimpleObjectProperty<>();
 
     private EventBus() {}
 
@@ -12,11 +14,15 @@ public class EventBus {
         return instance;
     }
 
-    public void sendMessage(String value) {
-        message.set(value);
+    public void sendEvent(Event event) {
+        this.event.set(event);
     }
 
-    public SimpleObjectProperty<String> messageProperty() {
-        return message;
+    public SimpleObjectProperty<Event> eventProperty() {
+        return event;
+    }
+
+    public void addListener(ChangeListener<? super Event> listener) {
+        event.addListener(listener);
     }
 }

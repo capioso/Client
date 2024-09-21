@@ -2,7 +2,6 @@ package networkstwo.capstone.controllers.pages;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -51,18 +50,22 @@ public class ChatPage {
         usernameLabel.setFont(buttonFont);
         usernameLabel.setText("Hi " + User.getUsername() + "!");
         updateUserTitles();
-        ChangeListener<String> eventBusListener = (obs, oldMessage, newMessage) -> {
-            Platform.runLater(() -> {
-                try {
-                    String title = getTitleByChatId(newMessage);
-                    User.getChats().add(new Chat(UUID.fromString(newMessage), title));
-                    addContactView(UUID.fromString(newMessage), title);
-                } catch (Exception e) {
-                    System.out.println("Problems with event bus: " + e.getMessage());
-                }
-            });
-        };
-        EventBus.getInstance().messageProperty().addListener(eventBusListener);
+        EventBus.getInstance().addListener((observable, oldEvent, newEvent) -> {
+            if ("chatUpdate".equals(newEvent.getType())) {
+                Platform.runLater(() -> {
+                    try {
+                        String title = getTitleByChatId(newEvent.getBody());
+                        User.getChats().add(new Chat(UUID.fromString(newEvent.getBody()), title));
+                        addContactView(UUID.fromString(newEvent.getBody()), title);
+                    } catch (Exception e) {
+                        System.out.println("Problems with event bus: " + e.getMessage());
+                    }
+                });
+            }
+            if ("messageUpdate".equals(newEvent.getType())){
+                System.out.println(newEvent.getBody());
+            }
+        });
     }
 
     @FXML
@@ -170,7 +173,7 @@ public class ChatPage {
 
     @FXML
     void settingsPressed(MouseEvent event) {
-        User.getChats().stream().forEach(chat -> {
+        User.getChats().forEach(chat -> {
             System.out.println(chat.getId() + " | "+ chat.getTitle());
         });
     }
