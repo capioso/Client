@@ -147,10 +147,14 @@ public class ChatView {
 
         List<Message> messages = new ArrayList<>();
         for (int i = 0; i < parts.length; i += 3) {
-            UUID id = UUID.fromString(parts[i]);
-            String sender = parts[i + 1];
-            String content = parts[i + 2];
-            messages.add(new Message(id, sender, content));
+            try {
+                UUID id = UUID.fromString(parts[i]);
+                String sender = parts[i + 1];
+                String content = parts[i + 2];
+                messages.add(new Message(id, sender, content));
+            }catch (Exception e){
+                System.out.println("Error parsing string to list of messages: " + e.getMessage());
+            }
         }
 
         return messages;
