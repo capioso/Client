@@ -50,6 +50,7 @@ public class ChatView {
     private UUID chatId;
 
     private Chat thisChat;
+    private final List<UUID> messagesIds = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -59,7 +60,6 @@ public class ChatView {
         textField.setFont(textFieldFont);
 
         EventBus.getInstance().addListener((observable, oldEvent, newEvent) -> {
-            System.out.println("PREVIO A LOAD");
             if ("loadMessage".equals(newEvent.getType())) {
                 Platform.runLater(() -> {
                     try {
@@ -68,10 +68,13 @@ public class ChatView {
                                 .findFirst()
                                 .orElse(null);
                         if (messageToAdd != null){
-                            if (messageToAdd.getSender().equals(User.getUsername())){
-                                addMessageView(true, User.getUsername(),messageToAdd.getBinaryContent());
-                            }else{
-                                addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent());
+                            if (!messagesIds.contains(messageToAdd.getId())){
+                                messagesIds.add(messageToAdd.getId());
+                                if (messageToAdd.getSender().equals(User.getUsername())){
+                                    addMessageView(true, User.getUsername(),messageToAdd.getBinaryContent());
+                                }else{
+                                    addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent());
+                                }
                             }
                         }
                     } catch (Exception e) {
@@ -160,7 +163,7 @@ public class ChatView {
         loadMessages();
     }
 
-    public void loadMessages() {
+    private void loadMessages() {
         GetMessagesByChat getMesage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
         JsonNode response = MessageSender.getResponse(getMesage);
         if (response.get("title").asText().equals("message")) {
