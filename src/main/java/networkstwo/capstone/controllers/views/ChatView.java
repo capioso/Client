@@ -47,9 +47,6 @@ public class ChatView {
         titleText.setFont(titleFont);
         Font textFieldFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-SemiBoldItalic.ttf"), 13);
         textField.setFont(textFieldFont);
-        GetMessagesByChat getMesage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
-        JsonNode response = MessageSender.getResponse(getMesage);
-        System.out.println(response);
     }
 
     @FXML
@@ -101,4 +98,9 @@ public class ChatView {
         titleText.setText(title + " | " + chatId);
     }
 
+    public void loadMessages(){
+        GetMessagesByChat getMesage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
+        JsonNode response = MessageSender.getResponse(getMesage);
+        System.out.println(response);
+    }
 }

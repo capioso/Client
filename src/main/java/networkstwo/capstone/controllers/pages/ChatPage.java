@@ -142,6 +142,7 @@ public class ChatPage {
                 AnchorPane anchorPane = chatViewFxml.load();
                 ChatView controllerView = chatViewFxml.getController();
                 controllerView.setData(chatId, title);
+                controllerView.loadMessages();
                 chatPane.getChildren().setAll(anchorPane);
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
