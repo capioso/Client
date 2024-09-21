@@ -23,6 +23,7 @@ import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class ChatView {
@@ -86,7 +87,8 @@ public class ChatView {
         if (event.getCode() == KeyCode.ENTER) {
             String content = textField.getText();
             try {
-                String binaryContent = Base64.getEncoder().encodeToString(content.getBytes());
+                byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+                String binaryContent = Base64.getEncoder().encodeToString(bytes);
                 SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent);
                 JsonNode response = MessageSender.getResponse(sendMessage);
                 String title = response.get("title").asText();
@@ -104,7 +106,7 @@ public class ChatView {
                     throw new Exception(body);
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("Problem sending message: " + e.getMessage());
             }
         }
     }
@@ -122,7 +124,7 @@ public class ChatView {
 
         MessageView controller = messageView.getController();
         controller.setUsernameTitle(username);
-        controller.setMessageBody(new String(decodedBytes));
+        controller.setMessageBody(new String(decodedBytes, StandardCharsets.UTF_8));
         messagesBox.getChildren().add(anchorPane);
     }
 
