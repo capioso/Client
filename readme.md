@@ -10,7 +10,7 @@
 > The keystore must be moved to the resources' folder.
 
 ### Properties
-> There must be a .properties file were are stored the following content:
+> There must be a .properties file in resources were are stored the following content:
 ```shell
 SOCKET_PORT=
 SERVER_HOST=
