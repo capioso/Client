@@ -62,12 +62,11 @@ public class ChatPage {
             if ("messageUpdate".equals(newEvent.type())){
                 try {
                     JsonNode item = newEvent.body();
-                    System.out.println(item.toString());
-                    /*
-                    String chatId = newEvent.body().path("chatId").asText();
-                    String messageId = newEvent.body().path("messageId").asText();
-                    String username = newEvent.body().path("username").asText();
-                    String content = newEvent.body().path("content").asText();
+
+                    String chatId = item.get("chatId").asText();
+                    String messageId = item.get("messageId").asText();
+                    String username = item.get("usernameSender").asText();
+                    String content = item.get("content").asText();
 
                     Chat chatFromMessage = User.getChats().stream()
                             .filter(chat -> chat.getId().equals(UUID.fromString(chatId)))
@@ -79,7 +78,6 @@ public class ChatPage {
                         EventBus.getInstance().sendEvent(new Event("loadMessage", newEvent.body()));
                     }
 
-                     */
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                 }

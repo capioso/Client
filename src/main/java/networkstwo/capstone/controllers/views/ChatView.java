@@ -1,7 +1,6 @@
 package networkstwo.capstone.controllers.views;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,15 +58,20 @@ public class ChatView {
         titleText.setFont(titleFont);
         Font textFieldFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-SemiBoldItalic.ttf"), 13);
         textField.setFont(textFieldFont);
-/*
+
         EventBus.getInstance().addListener((observable, oldEvent, newEvent) -> {
             if ("loadMessage".equals(newEvent.type())) {
                 Platform.runLater(() -> {
                     try {
+                        JsonNode item = newEvent.body();
+
+                        String messageId = item.get("messageId").asText();
+
                         Message messageToAdd = thisChat.getMessages().stream()
-                                .filter(message -> message.getId().equals(UUID.fromString(newEvent.body())))
+                                .filter(message -> message.getId().equals(UUID.fromString(messageId)))
                                 .findFirst()
                                 .orElse(null);
+
                         if (messageToAdd != null){
                             if (!messagesIds.contains(messageToAdd.getId())){
                                 messagesIds.add(messageToAdd.getId());
@@ -85,7 +89,6 @@ public class ChatView {
             }
         });
 
- */
     }
 
     @FXML
