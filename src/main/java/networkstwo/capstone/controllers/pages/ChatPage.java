@@ -61,6 +61,10 @@ public class ChatPage {
             }
             if ("messageUpdate".equals(newEvent.type())){
                 try {
+                    for (JsonNode item : newEvent.body()){
+                        System.out.println(item.toString());
+                    }
+                    /*
                     String chatId = newEvent.body().path("chatId").asText();
                     String messageId = newEvent.body().path("messageId").asText();
                     String username = newEvent.body().path("username").asText();
@@ -75,6 +79,8 @@ public class ChatPage {
                         chatFromMessage.getMessages().add(new Message(UUID.fromString(messageId), username, content));
                         EventBus.getInstance().sendEvent(new Event("loadMessage", newEvent.body()));
                     }
+
+                     */
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                 }
