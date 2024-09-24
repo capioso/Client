@@ -49,7 +49,7 @@ public class LogInPage {
             JsonNode response = MessageSender.getResponse(logInMessage);
             String title = response.get("title").asText();
             String body = response.get("body").asText();
-            if (!title.equals("token")) {
+            if (!title.equals("message")) {
                 throw new Exception("Token Lost");
             }
             User.setToken(body);

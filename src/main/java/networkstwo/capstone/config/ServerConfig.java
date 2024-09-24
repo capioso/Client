@@ -45,7 +45,7 @@ public class ServerConfig {
         }
     }
 
-    public void sendMessage(String message) {
+    public void sendMessage(Object message) {
         connector.sendMessage(message);
     }
 

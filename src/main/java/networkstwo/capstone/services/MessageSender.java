@@ -9,11 +9,7 @@ public class MessageSender {
     public static JsonNode getResponse(Object message) {
         try {
             ServerConfig serverConfig = ServerConfig.getInstance();
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            String jsonMessage = objectMapper.writeValueAsString(message);
-            serverConfig.sendMessage(jsonMessage);
-
+            serverConfig.sendMessage(message);
             return serverConfig.getResponse();
         } catch (Exception e) {
             ObjectMapper objectMapper = new ObjectMapper();

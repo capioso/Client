@@ -2,15 +2,15 @@ package networkstwo.capstone.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import networkstwo.capstone.models.Message;
+import org.msgpack.jackson.dataformat.MessagePackFactory;
 import networkstwo.capstone.models.Event;
 import networkstwo.capstone.services.EventBus;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -18,9 +18,10 @@ public class ServerConnection {
     private final String host;
     private final int port;
     private SSLSocket socket;
-    private PrintWriter out;
-    private BufferedReader in;
+    private OutputStream out;
+    private InputStream in;
     private final BlockingQueue<JsonNode> responseQueue = new LinkedBlockingQueue<>();
+    private final ObjectMapper objectMapper = new ObjectMapper(new MessagePackFactory());
 
     public ServerConnection(String host, int port) {
         this.host = host;
@@ -30,8 +31,8 @@ public class ServerConnection {
     public boolean connect(SSLSocketFactory sslSocketFactory) {
         try {
             socket = (SSLSocket) sslSocketFactory.createSocket(host, port);
-            this.out = new PrintWriter(socket.getOutputStream(), true);
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.out = socket.getOutputStream();
+            this.in = socket.getInputStream();
             startListening();
             return true;
         } catch (Exception e) {
@@ -43,10 +44,12 @@ public class ServerConnection {
     private void startListening() {
         new Thread(() -> {
             try {
-                String response;
-                ObjectMapper objectMapper = new ObjectMapper();
-                while ((response = in.readLine()) != null) {
-                    JsonNode node = objectMapper.readTree(response);
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    byte[] serverResponseBytes = Arrays.copyOf(buffer, bytesRead);;
+                    JsonNode node = objectMapper.readTree(serverResponseBytes);
                     String title = node.get("title").asText();
                     String operation = node.get("body").asText();
                     switch (title) {
@@ -66,9 +69,15 @@ public class ServerConnection {
         return responseQueue.take();
     }
 
-    public void sendMessage(String message) {
+    public void sendMessage(Object message) {
         if (out != null) {
-            out.println(message);
+            try {
+                byte[] responseBytes = objectMapper.writeValueAsBytes(message);
+                out.write(responseBytes);
+                out.flush();
+            }catch (Exception e) {
+                System.out.println("Error sending message: " + e.getMessage());
+            }
         }
     }
 
