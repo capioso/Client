@@ -61,9 +61,8 @@ public class ChatPage {
             }
             if ("messageUpdate".equals(newEvent.type())){
                 try {
-                    for (JsonNode item : newEvent.body()){
-                        System.out.println(item.toString());
-                    }
+                    JsonNode item = newEvent.body();
+                    System.out.println(item.toString());
                     /*
                     String chatId = newEvent.body().path("chatId").asText();
                     String messageId = newEvent.body().path("messageId").asText();
