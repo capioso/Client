@@ -8,7 +8,7 @@ public class Chat {
     private UUID id;
     private String title;
 
-    private List<Message> messages = new ArrayList<>();
+    private final List<Message> messages = new ArrayList<>();
 
     public Chat(UUID id, String title) {
         this.id = id;

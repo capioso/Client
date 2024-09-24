@@ -50,6 +50,7 @@ public class ChatView {
     private UUID chatId;
 
     private Chat thisChat;
+
     private final List<UUID> messagesIds = new ArrayList<>();
 
     @FXML
@@ -58,13 +59,13 @@ public class ChatView {
         titleText.setFont(titleFont);
         Font textFieldFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Poppins-SemiBoldItalic.ttf"), 13);
         textField.setFont(textFieldFont);
-
+/*
         EventBus.getInstance().addListener((observable, oldEvent, newEvent) -> {
-            if ("loadMessage".equals(newEvent.getType())) {
+            if ("loadMessage".equals(newEvent.type())) {
                 Platform.runLater(() -> {
                     try {
                         Message messageToAdd = thisChat.getMessages().stream()
-                                .filter(message -> message.getId().equals(UUID.fromString(newEvent.getBody())))
+                                .filter(message -> message.getId().equals(UUID.fromString(newEvent.body())))
                                 .findFirst()
                                 .orElse(null);
                         if (messageToAdd != null){
@@ -83,6 +84,8 @@ public class ChatView {
                 });
             }
         });
+
+ */
     }
 
     @FXML
@@ -164,44 +167,22 @@ public class ChatView {
     }
 
     private void loadMessages() {
-        GetMessagesByChat getMesage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
-        JsonNode response = MessageSender.getResponse(getMesage);
+        GetMessagesByChat getMessage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
+        JsonNode response = MessageSender.getResponse(getMessage);
+
         if (response.get("title").asText().equals("message")) {
-            String body = response.get("body").asText();
-            List<Message> messagesList = stringToList(body);
-            messagesList.forEach(message -> {
+            JsonNode body = response.get("body");
+            for (JsonNode message : body) {
+                UUID messageId = UUID.fromString(message.path("messageId").asText());
+                String senderTitle = message.path("sender").asText();
+                String content = message.path("content").asText();
                 try {
-                    if (message.getSender().equals(User.getUsername())){
-                        addMessageView(true, User.getUsername(),message.getBinaryContent());
-                    }else{
-                        addMessageView(false, message.getSender(), message.getBinaryContent());
-                    }
+                    thisChat.getMessages().add(new Message(messageId, senderTitle, content));
+                    addMessageView(senderTitle.equals(User.getUsername()), senderTitle,content);
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                 }
-            });
-        }
-    }
-
-    private List<Message> stringToList(String body) {
-        List<Message> messages = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        try {
-            JsonNode rootNode = objectMapper.readTree(body);
-            JsonNode messagesNode = rootNode.path("messages");
-
-            for (JsonNode messageNode : messagesNode) {
-                UUID id = UUID.fromString(messageNode.path("id").asText());
-                String sender = messageNode.path("sender").asText();
-                String content = messageNode.path("content").asText();
-
-                messages.add(new Message(id, sender, content));
             }
-        } catch (Exception e) {
-            System.out.println("Error parsing string to list of messages: " + e.getMessage());
         }
-
-        return messages;
     }
 }

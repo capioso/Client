@@ -51,10 +51,10 @@ public class ServerConnection {
                     byte[] serverResponseBytes = Arrays.copyOf(buffer, bytesRead);;
                     JsonNode node = objectMapper.readTree(serverResponseBytes);
                     String title = node.get("title").asText();
-                    String operation = node.get("body").asText();
+                    JsonNode bodyNode = node.path("body");
                     switch (title) {
-                        case "chatUpdate" -> EventBus.getInstance().sendEvent(new Event("chatUpdate", operation));
-                        case "messageUpdate" -> EventBus.getInstance().sendEvent(new Event("messageUpdate", operation));
+                        case "chatUpdate" -> EventBus.getInstance().sendEvent(new Event("chatUpdate", bodyNode));
+                        case "messageUpdate" -> EventBus.getInstance().sendEvent(new Event("messageUpdate", bodyNode));
                         default -> responseQueue.offer(node);
                     }
                 }
