@@ -165,27 +165,41 @@ public class ChatView {
                 .filter(chat -> chat.getId().equals(this.chatId))
                 .findFirst()
                 .orElse(null);
-
         loadMessages();
     }
 
     private void loadMessages() {
-        GetMessagesByChat getMessage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
-        JsonNode response = MessageSender.getResponse(getMessage);
+        if (thisChat.getMessages().isEmpty()){
+            GetMessagesByChat getMessage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
+            JsonNode response = MessageSender.getResponse(getMessage);
 
-        if (response.get("title").asText().equals("message")) {
-            JsonNode body = response.get("body");
-            for (JsonNode message : body) {
-                System.out.println(message);
-                UUID messageId = UUID.fromString(message.path("messageId").asText());
-                String senderTitle = message.path("sender").asText();
-                String content = message.path("content").asText();
-                try {
-                    thisChat.getMessages().add(new Message(messageId, senderTitle, content));
-                    addMessageView(senderTitle.equals(User.getUsername()), senderTitle,content);
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
+            if (response.get("title").asText().equals("message")) {
+                JsonNode body = response.get("body");
+                for (JsonNode message : body) {
+                    System.out.println(message);
+                    UUID messageId = UUID.fromString(message.path("messageId").asText());
+                    String senderTitle = message.path("sender").asText();
+                    String content = message.path("content").asText();
+                    try {
+                        thisChat.getMessages().add(new Message(messageId, senderTitle, content));
+                        addMessageView(senderTitle.equals(User.getUsername()), senderTitle,content);
+                    }catch (Exception e){
+                        System.out.println(e.getMessage());
+                    }
                 }
+            }
+        }else {
+            try {
+                thisChat.getMessages().forEach(message -> {
+                    try {
+                        addMessageView(message.getSender().equals(User.getUsername()), message.getSender(),message.getBinaryContent());
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                });
+
+            }catch (Exception e){
+                System.out.println(e.getMessage());
             }
         }
     }
