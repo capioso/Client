@@ -176,6 +176,7 @@ public class ChatView {
         if (response.get("title").asText().equals("message")) {
             JsonNode body = response.get("body");
             for (JsonNode message : body) {
+                System.out.println(message);
                 UUID messageId = UUID.fromString(message.path("messageId").asText());
                 String senderTitle = message.path("sender").asText();
                 String content = message.path("content").asText();
