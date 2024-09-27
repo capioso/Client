@@ -13,7 +13,6 @@ import networkstwo.capstone.messages.LogInUser;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.MessageSender;
-import networkstwo.capstone.services.ServerConnection;
 import networkstwo.capstone.utils.ValidationUtils;
 
 import static networkstwo.capstone.utils.ScreenUtils.changeScreen;
@@ -50,7 +49,7 @@ public class LogInPage {
             JsonNode response = MessageSender.getResponse(logInMessage);
             String title = response.get("title").asText();
             String body = response.get("body").asText();
-            if (!title.equals("token")) {
+            if (!title.equals("message")) {
                 throw new Exception("Token Lost");
             }
             User.setToken(body);

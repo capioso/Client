@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import networkstwo.capstone.services.ServerConnection;
+import networkstwo.capstone.config.ServerConfig;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
@@ -17,9 +17,9 @@ public class App extends Application {
     public void start(Stage stage) {
         changeScreen(stage, "WelcomePage.fxml");
 
-        ServerConnection serverConnection = ServerConnection.getInstance();
+        ServerConfig serverConfig = ServerConfig.getInstance();
 
-        CompletableFuture<Boolean> pingFuture = CompletableFuture.supplyAsync(serverConnection::ping);
+        CompletableFuture<Boolean> pingFuture = CompletableFuture.supplyAsync(serverConfig::ping);
 
         pingFuture.thenAccept(isConnected -> Platform.runLater(() -> {
             if (isConnected) {

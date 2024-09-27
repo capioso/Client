@@ -47,28 +47,26 @@ public class ChatPage {
         usernameLabel.setText("Hi " + User.getUsername() + "!");
         updateUserTitles();
         EventBus.getInstance().addListener((observable, oldEvent, newEvent) -> {
-            if ("chatUpdate".equals(newEvent.getType())) {
+            if ("chatUpdate".equals(newEvent.type())) {
                 Platform.runLater(() -> {
                     try {
-                        UUID chatId = UUID.fromString(newEvent.getBody());
-                        String title = getTitleByChatId(newEvent.getBody());
-                        User.getChats().add(new Chat(chatId, title));
-                        addContactView(chatId, title);
+                        UUID chatId = UUID.fromString(newEvent.body().path("chatId").asText());
+                        String chatTitle = newEvent.body().path("title").asText();
+                        User.getChats().add(new Chat(chatId, chatTitle));
+                        addContactView(chatId, chatTitle);
                     } catch (Exception e) {
                         System.out.println("Problems with event bus: " + e.getMessage());
                     }
                 });
             }
-            if ("messageUpdate".equals(newEvent.getType())){
+            if ("messageUpdate".equals(newEvent.type())){
                 try {
-                    ObjectMapper objectMapper = new ObjectMapper();
+                    JsonNode item = newEvent.body();
 
-                    JsonNode rootNode = objectMapper.readTree(newEvent.getBody());
-
-                    String chatId = rootNode.path("chatId").asText();
-                    String messageId = rootNode.path("messageId").asText();
-                    String username = rootNode.path("username").asText();
-                    String content = rootNode.path("content").asText();
+                    String chatId = item.get("chatId").asText();
+                    String messageId = item.get("messageId").asText();
+                    String username = item.get("usernameSender").asText();
+                    String content = item.get("content").asText();
 
                     Chat chatFromMessage = User.getChats().stream()
                             .filter(chat -> chat.getId().equals(UUID.fromString(chatId)))
@@ -77,8 +75,9 @@ public class ChatPage {
 
                     if (chatFromMessage != null){
                         chatFromMessage.getMessages().add(new Message(UUID.fromString(messageId), username, content));
-                        EventBus.getInstance().sendEvent(new Event("loadMessage", messageId));
+                        EventBus.getInstance().sendEvent(new Event("loadMessage", newEvent.body()));
                     }
+
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                 }
@@ -109,21 +108,14 @@ public class ChatPage {
     public void updateUserTitles() throws Exception{
         JsonNode response = MessageSender.getResponse(new GetChats(User.getToken(), Operation.GET_CHATS.name()));
         String title = response.get("title").asText();
-        String body = response.get("body").asText();
+
         if (title.equals("message")) {
-            List<String> chatIds = stringToList(body);
-            chatIds.forEach(chatId -> {
-                try {
-                    String newTitle = getTitleByChatId(chatId);
-                    if (newTitle != null){
-                        User.getChats().add(new Chat(UUID.fromString(chatId), newTitle));
-                    }else{
-                        System.out.println("Problem adding chat");
-                    }
-                }catch (Exception e){
-                    System.out.println("Problem updating user titles");
-                }
-            });
+            JsonNode bodyNode = response.path("body");
+            for (JsonNode item : bodyNode) {
+                String chatId = item.path("chatId").asText();
+                String chatTitle = item.path("title").asText();
+                User.getChats().add(new Chat(UUID.fromString(chatId), chatTitle));
+            }
             reLoadContacts();
         }
     }

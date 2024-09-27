@@ -1,19 +1,6 @@
 package networkstwo.capstone.models;
 
-public class Event {
-    private final String type;
-    private final String body;
+import com.fasterxml.jackson.databind.JsonNode;
 
-    public Event(String type, String body) {
-        this.type = type;
-        this.body = body;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getBody() {
-        return body;
-    }
+public record Event(String type, JsonNode body) {
 }
