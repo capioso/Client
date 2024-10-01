@@ -26,7 +26,7 @@ public class CreateGroupView {
     @FXML
     private TextField usernameText;
 
-    private UUID chatId;
+    private final String[] data = new String[2];
 
     @FXML
     void cancelPressed(MouseEvent event) {
@@ -42,20 +42,15 @@ public class CreateGroupView {
             acceptUsername(username);
             acceptTitle(title);
 
-            CreateChat getMessage = new CreateChat(User.getToken(), Operation.CREATE_CHAT.name(), chatId, username, title);
-            JsonNode response = MessageSender.getResponse(getMessage);
-
-            System.out.println(response);
-
-            updateTitleById(chatId, title);
-            EventBus.getInstance().sendEvent(new Event("loadTitle", response));
+            data[0] = username;
+            data[1] = title;
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
-    public void setChat(UUID chatId) {
-        this.chatId = chatId;
+    public String[] getData(){
+        return data;
     }
 
 }

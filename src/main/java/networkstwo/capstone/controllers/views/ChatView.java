@@ -16,12 +16,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import networkstwo.capstone.App;
 import networkstwo.capstone.controllers.stages.CreateGroupView;
+import networkstwo.capstone.messages.CreateChat;
 import networkstwo.capstone.messages.GetMessagesByChat;
 import networkstwo.capstone.messages.SendMessage;
-import networkstwo.capstone.models.Chat;
-import networkstwo.capstone.models.Message;
-import networkstwo.capstone.models.Operation;
-import networkstwo.capstone.models.User;
+import networkstwo.capstone.models.*;
 import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
@@ -31,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import static networkstwo.capstone.services.UserServices.updateTitleById;
 import static networkstwo.capstone.utils.ScreenUtils.showLittleStage;
 
 public class ChatView {
@@ -105,8 +104,19 @@ public class ChatView {
         try {
             FXMLLoader createViewFxml = new FXMLLoader(App.class.getResource("stages/CreateGroupStage.fxml"));
             showLittleStage("Enter title from chat & username to add", new Scene(createViewFxml.load()));
+
             CreateGroupView controller = createViewFxml.getController();
-            controller.setChat(chatId);
+            String[] dataFromStage = controller.getData();
+
+            CreateChat getMessage = new CreateChat(User.getToken(), Operation.CREATE_CHAT.name(), chatId, dataFromStage[0], dataFromStage[1]);
+            JsonNode response = MessageSender.getResponse(getMessage);
+
+            String responseTitle = response.get("title").asText();
+            if (responseTitle.equals("message")){
+                System.out.println("Response: " + response);
+                updateTitleById(chatId, dataFromStage[1]);
+                EventBus.getInstance().sendEvent(new Event("loadTitle", response));
+            }
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
