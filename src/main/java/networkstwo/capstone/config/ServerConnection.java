@@ -55,6 +55,7 @@ public class ServerConnection {
                     switch (title) {
                         case "chatUpdate" -> EventBus.getInstance().sendEvent(new Event("chatUpdate", bodyNode));
                         case "messageUpdate" -> EventBus.getInstance().sendEvent(new Event("messageUpdate", bodyNode));
+                        case "groupUpdate" -> EventBus.getInstance().sendEvent(new Event("groupUpdate", bodyNode));
                         default -> responseQueue.offer(node);
                     }
                 }
