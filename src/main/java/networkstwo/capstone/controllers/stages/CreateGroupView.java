@@ -1,21 +1,10 @@
 package networkstwo.capstone.controllers.stages;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import networkstwo.capstone.messages.CreateChat;
-import networkstwo.capstone.models.Chat;
-import networkstwo.capstone.models.Event;
-import networkstwo.capstone.models.Operation;
-import networkstwo.capstone.models.User;
-import networkstwo.capstone.services.EventBus;
-import networkstwo.capstone.services.MessageSender;
 
-import java.util.UUID;
-
-import static networkstwo.capstone.services.UserServices.updateTitleById;
 import static networkstwo.capstone.utils.FullValidationUtils.acceptTitle;
 import static networkstwo.capstone.utils.FullValidationUtils.acceptUsername;
 
@@ -44,6 +33,9 @@ public class CreateGroupView {
 
             data[0] = username;
             data[1] = title;
+
+            Stage stage = (Stage) titleText.getScene().getWindow();
+            stage.close();
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
