@@ -4,6 +4,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.ColorAdjust?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -14,7 +15,7 @@
 
 <AnchorPane fx:id="basePane" maxHeight="400.0" maxWidth="400.0" minHeight="400.0" minWidth="400.0" prefHeight="400.0" prefWidth="400.0" styleClass="container" stylesheets="@../stylesheet/chatView.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="networkstwo.capstone.controllers.views.ChatView">
    <children>
-      <AnchorPane layoutX="14.0" layoutY="-7.0" maxHeight="40.0" minHeight="40.0" onMouseClicked="#headerPressed" prefHeight="40.0" prefWidth="200.0" styleClass="header" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane layoutX="14.0" layoutY="-7.0" maxHeight="40.0" minHeight="40.0" onMouseClicked="#headerPressed" prefHeight="40.0" prefWidth="200.0" styleClass="header" AnchorPane.bottomAnchor="360.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="0.0">
          <children>
             <AnchorPane layoutX="-20.0" layoutY="-80.0" maxHeight="34.0" minHeight="34.0" prefHeight="34.0" prefWidth="40.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="350.0" AnchorPane.topAnchor="1.0">
                <children>
@@ -25,7 +26,7 @@
                   </ImageView>
                </children>
             </AnchorPane>
-            <Text fx:id="titleText" fill="WHITE" layoutX="105.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" AnchorPane.leftAnchor="70.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="6.0">
+            <Text fx:id="titleText" fill="WHITE" layoutX="74.0" layoutY="30.4208984375" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" wrappingWidth="285.08203125" AnchorPane.bottomAnchor="4.390625" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="8.0">
                <font>
                   <Font name="System Bold Italic" size="22.0" />
                </font>
@@ -67,5 +68,13 @@
             </VBox>
          </content>
       </ScrollPane>
+      <ImageView fitHeight="36.0" fitWidth="30.0" onMouseClicked="#promoteChatPressed" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="365.0" AnchorPane.leftAnchor="365.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+         <image>
+            <Image url="@../../../images/upIcon.png" />
+         </image>
+         <effect>
+            <ColorAdjust brightness="-0.21" contrast="-0.14" saturation="0.33" />
+         </effect>
+      </ImageView>
    </children>
 </AnchorPane>

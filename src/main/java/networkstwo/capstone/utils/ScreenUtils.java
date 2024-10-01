@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import networkstwo.capstone.App;
 
@@ -49,5 +50,19 @@ public class ScreenUtils {
         alert.setHeaderText(title);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    public static void showLittleStage(String title, Scene scene) {
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle(title);
+        dialogStage.setScene(scene);
+        dialogStage.setMinWidth(300);
+        dialogStage.setMaxWidth(300);
+        dialogStage.setWidth(300);
+        dialogStage.setMinHeight(160);
+        dialogStage.setMaxHeight(160);
+        dialogStage.setHeight(160);
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.showAndWait();
     }
 }

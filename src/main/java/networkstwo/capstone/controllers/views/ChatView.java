@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -14,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import networkstwo.capstone.App;
+import networkstwo.capstone.controllers.stages.CreateGroupView;
 import networkstwo.capstone.messages.GetMessagesByChat;
 import networkstwo.capstone.messages.SendMessage;
 import networkstwo.capstone.models.Chat;
@@ -28,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import static networkstwo.capstone.utils.ScreenUtils.showLittleStage;
 
 public class ChatView {
 
@@ -94,6 +98,18 @@ public class ChatView {
     @FXML
     void attachPressed(MouseEvent event) {
 
+    }
+
+    @FXML
+    void promoteChatPressed(MouseEvent event) {
+        try {
+            FXMLLoader createViewFxml = new FXMLLoader(App.class.getResource("stages/CreateGroupStage.fxml"));
+            showLittleStage("Enter title from chat & username to add", new Scene(createViewFxml.load()));
+            CreateGroupView controller = createViewFxml.getController();
+            controller.setChat(chatId);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     @FXML

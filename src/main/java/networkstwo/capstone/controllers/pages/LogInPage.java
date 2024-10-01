@@ -13,7 +13,7 @@ import networkstwo.capstone.messages.LogInUser;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.models.User;
 import networkstwo.capstone.services.MessageSender;
-import networkstwo.capstone.utils.ValidationUtils;
+import networkstwo.capstone.utils.StringValidationUtils;
 
 import static networkstwo.capstone.utils.ScreenUtils.changeScreen;
 import static networkstwo.capstone.utils.ScreenUtils.showAlert;
@@ -42,7 +42,7 @@ public class LogInPage {
         try {
             String username = usernameBox.getText();
             String password = passwordBox.getText();
-            if (!ValidationUtils.validateUsername(username) || !ValidationUtils.validatePassword(password)) {
+            if (!StringValidationUtils.validateUsername(username) || !StringValidationUtils.validatePassword(password)) {
                 throw new Exception("Bad Username or Password");
             }
             LogInUser logInMessage = new LogInUser(Operation.LOGIN_USER.name(), username, password);

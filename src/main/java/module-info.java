@@ -19,5 +19,7 @@ module networkstwo.capstone {
     opens networkstwo.capstone.controllers.pages to javafx.fxml;
     exports networkstwo.capstone.controllers.views;
     opens networkstwo.capstone.controllers.views to javafx.fxml;
+    exports networkstwo.capstone.controllers.stages;
+    opens networkstwo.capstone.controllers.stages to javafx.fxml;
 
 }

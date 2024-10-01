@@ -1,4 +1,4 @@
-package networkstwo.capstone.controllers.views;
+package networkstwo.capstone.controllers.stages;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import javafx.beans.value.ChangeListener;
@@ -15,10 +15,10 @@ import networkstwo.capstone.services.MessageSender;
 
 import java.util.UUID;
 
-import static networkstwo.capstone.utils.ValidationUtils.validateUsername;
+import static networkstwo.capstone.utils.FullValidationUtils.acceptUsername;
 import static networkstwo.capstone.utils.ScreenUtils.showAlert;
 
-public class UsernameView {
+public class CreateChatView {
 
     @FXML
     private Text textField;
@@ -43,18 +43,10 @@ public class UsernameView {
     void okPressed(MouseEvent event) {
         try {
             String username = usernameText.getText();
-            if (!validateUsername(username)) {
-                throw new Exception("Bad username or title");
-            }
-            if (username.equals(User.getUsername())){
-                throw new Exception("You can not add yourself");
-            }
-            if (User.getChats().contains(username)){
-                throw new Exception("Title already added");
-            }
+            acceptUsername(username);
 
             UUID chatId = UUID.randomUUID();
-            CreateChat getMessage = new CreateChat(User.getToken(), Operation.CREATE_CHAT.name(), chatId, username);
+            CreateChat getMessage = new CreateChat(User.getToken(), Operation.CREATE_CHAT.name(), chatId, username, "");
             JsonNode response = MessageSender.getResponse(getMessage);
 
             String responseTitle = response.get("title").asText();
@@ -77,9 +69,7 @@ public class UsernameView {
         usernameText.textProperty().addListener(textFieldListener);
     }
 
-    public UUID
-    getData() {
+    public UUID getData() {
         return data;
     }
-
 }

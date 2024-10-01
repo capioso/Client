@@ -1,7 +1,6 @@
 package networkstwo.capstone.controllers.pages;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,12 +10,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import networkstwo.capstone.App;
 import networkstwo.capstone.controllers.views.ChatView;
 import networkstwo.capstone.controllers.views.ContactView;
-import networkstwo.capstone.controllers.views.UsernameView;
+import networkstwo.capstone.controllers.stages.CreateChatView;
 import networkstwo.capstone.messages.GetChats;
 import networkstwo.capstone.messages.GetSingleChat;
 import networkstwo.capstone.models.*;
@@ -24,6 +21,8 @@ import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
 import java.util.*;
+
+import static networkstwo.capstone.utils.ScreenUtils.showLittleStage;
 
 public class ChatPage {
     @FXML
@@ -45,7 +44,9 @@ public class ChatPage {
         Font buttonFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 17);
         usernameLabel.setFont(buttonFont);
         usernameLabel.setText("Hi " + User.getUsername() + "!");
+
         updateUserTitles();
+
         EventBus.getInstance().addListener((observable, oldEvent, newEvent) -> {
             if ("chatUpdate".equals(newEvent.type())) {
                 Platform.runLater(() -> {
@@ -82,6 +83,9 @@ public class ChatPage {
                     System.out.println(e.getMessage());
                 }
             }
+            if ("loadTitle".equals(newEvent.type())){
+                System.out.println(newEvent.body());
+            }
         });
     }
 
@@ -105,7 +109,7 @@ public class ChatPage {
         }
     }
 
-    public void updateUserTitles() throws Exception{
+    private void updateUserTitles() throws Exception{
         JsonNode response = MessageSender.getResponse(new GetChats(User.getToken(), Operation.GET_CHATS.name()));
         String title = response.get("title").asText();
 
@@ -142,14 +146,6 @@ public class ChatPage {
         });
     }
 
-    private List<String> stringToList(String input) {
-        if (input == null || input.equals("[]")) {
-            return new ArrayList<>();
-        }
-        String cleanInput = input.substring(1, input.length() - 1);
-        return Arrays.asList(cleanInput.split("\\s*,\\s*"));
-    }
-
     private void addContactView(UUID chatId, String title) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("views/ContactView.fxml"));
         AnchorPane pane = fxmlLoader.load();
@@ -170,19 +166,9 @@ public class ChatPage {
     }
 
     private UUID openUsernameView() throws Exception {
-        FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("views/UsernameView.fxml"));
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("Enter Chat's title & Username");
-        dialogStage.setScene(new Scene(usernameDialog.load()));
-        dialogStage.setMinWidth(300);
-        dialogStage.setMaxWidth(300);
-        dialogStage.setWidth(300);
-        dialogStage.setMinHeight(160);
-        dialogStage.setMaxHeight(160);
-        dialogStage.setHeight(160);
-        dialogStage.initModality(Modality.APPLICATION_MODAL);
-        dialogStage.showAndWait();
-        UsernameView dialogController = usernameDialog.getController();
+        FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("stages/CreateChatStage.fxml"));
+        showLittleStage("Enter Username from user", new Scene(usernameDialog.load()));
+        CreateChatView dialogController = usernameDialog.getController();
         return dialogController.getData();
     }
 
