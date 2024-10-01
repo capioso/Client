@@ -84,10 +84,12 @@ public class ChatPage {
                 }
             }
             if ("groupUpdate".equals(newEvent.type())){
-                System.out.println(newEvent.body());
-            }
-            if ("loadTitle".equals(newEvent.type())){
-                System.out.println("load title launched: " + newEvent.body());
+                try {
+                    System.out.println("Group update" + newEvent.body());
+                    reLoadContacts();
+                }catch (Exception e){
+                    System.out.println(e.getMessage());
+                }
             }
         });
     }

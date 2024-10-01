@@ -113,9 +113,7 @@ public class ChatView {
 
             String responseTitle = response.get("title").asText();
             if (responseTitle.equals("message")){
-                System.out.println("Response: " + response);
                 updateTitleById(chatId, dataFromStage[1]);
-                EventBus.getInstance().sendEvent(new Event("loadTitle", response));
             }
         }catch (Exception e){
             System.out.println(e.getMessage());
