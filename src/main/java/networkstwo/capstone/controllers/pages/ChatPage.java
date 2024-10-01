@@ -83,8 +83,11 @@ public class ChatPage {
                     System.out.println(e.getMessage());
                 }
             }
-            if ("loadTitle".equals(newEvent.type())){
+            if ("groupUpdate".equals(newEvent.type())){
                 System.out.println(newEvent.body());
+            }
+            if ("loadTitle".equals(newEvent.type())){
+                System.out.println("load title launched: " + newEvent.body());
             }
         });
     }
