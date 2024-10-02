@@ -49,7 +49,7 @@ public class ChatView {
 
     private Chat thisChat;
 
-    private Set<UUID> messages;
+    private final Set<UUID> messages = new HashSet<>();
 
     @FXML
     public void initialize() {
