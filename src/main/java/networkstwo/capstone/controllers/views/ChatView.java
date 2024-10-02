@@ -131,7 +131,7 @@ public class ChatView {
                 String binaryContent = Arrays.toString(bytes);
                 ZonedDateTime messageDate =  ZonedDateTime.now(ZoneId.systemDefault());
 
-                SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent, messageDate);
+                SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent, messageDate.toString());
                 JsonNode response = MessageSender.getResponse(sendMessage);
 
                 String title = response.get("title").asText();

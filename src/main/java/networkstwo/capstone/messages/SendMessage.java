@@ -10,6 +10,6 @@ public record SendMessage(
         @JsonProperty("operation") String operation,
         @JsonProperty("chatId") UUID chatId,
         @JsonProperty("content") String content,
-        @JsonProperty("timestamp") ZonedDateTime timestamp
+        @JsonProperty("timestamp") String timestamp
 ) {
 }
