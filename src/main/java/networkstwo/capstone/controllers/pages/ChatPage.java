@@ -22,6 +22,7 @@ import networkstwo.capstone.services.MessageSender;
 
 import java.util.*;
 
+import static networkstwo.capstone.services.UserServices.updateTitleById;
 import static networkstwo.capstone.utils.ScreenUtils.showLittleStage;
 
 public class ChatPage {
@@ -84,12 +85,18 @@ public class ChatPage {
                 }
             }
             if ("groupUpdate".equals(newEvent.type())){
-                try {
-                    System.out.println("Group update" + newEvent.body());
-                    reLoadContacts();
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                }
+                Platform.runLater(() -> {
+                    try {
+                        JsonNode node = newEvent.body();
+                        UUID chatId = UUID.fromString(node.get("chatId").asText());
+                        String chatTitle = node.get("title").asText();
+                        updateTitleById(chatId, chatTitle);
+                        reLoadContacts();
+                    }catch (Exception e){
+                        System.out.println(e.getMessage());
+                    }
+                });
+
             }
         });
     }
