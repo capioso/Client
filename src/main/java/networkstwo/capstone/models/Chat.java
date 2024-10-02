@@ -5,11 +5,13 @@ import java.util.*;
 public class Chat {
     private UUID id;
     private String title;
+    private boolean isGroup;
     private final Set<Message> messages = new HashSet<>();
 
-    public Chat(UUID id, String title) {
+    public Chat(UUID id, String title, boolean isGroup) {
         this.id = id;
         this.title = title;
+        this.isGroup = isGroup;
     }
 
     public Set<Message> getMessages() {
@@ -30,6 +32,14 @@ public class Chat {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isGroup() {
+        return isGroup;
+    }
+
+    public void setGroup(boolean group) {
+        isGroup = group;
     }
 
     @Override

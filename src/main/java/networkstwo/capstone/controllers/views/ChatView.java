@@ -24,12 +24,8 @@ import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-import static networkstwo.capstone.services.UserServices.updateTitleById;
 import static networkstwo.capstone.utils.ScreenUtils.showLittleStage;
 
 public class ChatView {
@@ -53,8 +49,6 @@ public class ChatView {
 
     private Chat thisChat;
 
-    private final List<UUID> messagesIds = new ArrayList<>();
-
     @FXML
     public void initialize() {
         Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 22);
@@ -75,14 +69,11 @@ public class ChatView {
                                 .findFirst()
                                 .orElse(null);
 
-                        if (messageToAdd != null){
-                            if (!messagesIds.contains(messageToAdd.getId())){
-                                messagesIds.add(messageToAdd.getId());
-                                if (messageToAdd.getSender().equals(User.getUsername())){
-                                    addMessageView(true, User.getUsername(),messageToAdd.getBinaryContent());
-                                }else{
-                                    addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent());
-                                }
+                        if (messageToAdd != null) {
+                            if (messageToAdd.getSender().equals(User.getUsername())) {
+                                addMessageView(true, User.getUsername(), messageToAdd.getBinaryContent());
+                            } else {
+                                addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent());
                             }
                         }
                     } catch (Exception e) {
@@ -100,6 +91,11 @@ public class ChatView {
     }
 
     @FXML
+    void headerPressed(MouseEvent event) {
+
+    }
+
+    @FXML
     void promoteChatPressed(MouseEvent event) {
         try {
             FXMLLoader createViewFxml = new FXMLLoader(App.class.getResource("stages/CreateGroupStage.fxml"));
@@ -112,10 +108,10 @@ public class ChatView {
             JsonNode response = MessageSender.getResponse(getMessage);
 
             String responseTitle = response.get("title").asText();
-            if (responseTitle.equals("message")){
-                updateTitleById(chatId, dataFromStage[1]);
+            if (responseTitle.equals("message")) {
+                titleText.setText(dataFromStage[1]);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -136,14 +132,14 @@ public class ChatView {
 
                 if (title.equals("message")) {
                     UUID messageId = UUID.fromString(body);
-                    if (thisChat != null){
+                    if (thisChat != null) {
                         thisChat.getMessages().add(new Message(messageId, User.getUsername(), binaryContent));
                         addMessageView(true, User.getUsername(), binaryContent);
                         textField.setText("");
-                    }else{
+                    } else {
                         throw new Exception("thisChat is null");
                     }
-                }else{
+                } else {
                     throw new Exception(body);
                 }
             } catch (Exception e) {
@@ -176,11 +172,6 @@ public class ChatView {
         messagesBox.getChildren().add(anchorPane);
     }
 
-    @FXML
-    void headerPressed(MouseEvent event) {
-
-    }
-
     public void setData(UUID chatId, String title) {
         this.chatId = chatId;
         titleText.setText(title);
@@ -193,7 +184,7 @@ public class ChatView {
     }
 
     private void loadMessages() {
-        if (thisChat.getMessages().isEmpty()){
+        if (thisChat.getMessages().isEmpty()) {
             GetMessagesByChat getMessage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
             JsonNode response = MessageSender.getResponse(getMessage);
 
@@ -206,23 +197,23 @@ public class ChatView {
                     String content = message.path("content").asText();
                     try {
                         thisChat.getMessages().add(new Message(messageId, senderTitle, content));
-                        addMessageView(senderTitle.equals(User.getUsername()), senderTitle,content);
-                    }catch (Exception e){
+                        addMessageView(senderTitle.equals(User.getUsername()), senderTitle, content);
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                 }
             }
-        }else {
+        } else {
             try {
                 thisChat.getMessages().forEach(message -> {
                     try {
-                        addMessageView(message.getSender().equals(User.getUsername()), message.getSender(),message.getBinaryContent());
+                        addMessageView(message.getSender().equals(User.getUsername()), message.getSender(), message.getBinaryContent());
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                 });
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }

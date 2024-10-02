@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UserServices {
-    public static List<String> getTitlesWith(String titleToFind){
+    public static List<String> getTitlesWith(String titleToFind) {
         return User.getChats()
                 .stream()
                 .map(Chat::getTitle)
@@ -16,11 +16,14 @@ public class UserServices {
                 .toList();
     }
 
-    public static void updateTitleById(UUID id, String newTitle){
+    public static void updateChatById(UUID id, String newTitle, boolean isGroup) {
         User.getChats()
                 .stream()
                 .filter(chatToUpdate -> chatToUpdate.getId().equals(id))
                 .findFirst()
-                .ifPresent(chat -> chat.setTitle(newTitle));
+                .ifPresent(chat -> {
+                    chat.setTitle(newTitle);
+                    chat.setGroup(isGroup);
+                });
     }
 }
