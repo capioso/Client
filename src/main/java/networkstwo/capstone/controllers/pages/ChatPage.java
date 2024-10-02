@@ -20,6 +20,7 @@ import networkstwo.capstone.models.*;
 import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 
 import static networkstwo.capstone.services.UserServices.updateChatById;
@@ -70,6 +71,8 @@ public class ChatPage {
                     String messageId = item.get("messageId").asText();
                     String username = item.get("usernameSender").asText();
                     String content = item.get("content").asText();
+                    String stringTimestamp = item.get("timestamp").asText();
+                    ZonedDateTime timestamp = ZonedDateTime.parse(stringTimestamp);
 
                     Chat chatFromMessage = User.getChats().stream()
                             .filter(chat -> chat.getId().equals(UUID.fromString(chatId)))
@@ -77,7 +80,7 @@ public class ChatPage {
                             .orElse(null);
 
                     if (chatFromMessage != null) {
-                        chatFromMessage.getMessages().add(new Message(UUID.fromString(messageId), username, content));
+                        chatFromMessage.getMessages().add(new Message(UUID.fromString(messageId), username, content, timestamp));
                         EventBus.getInstance().sendEvent(new Event("loadMessage", newEvent.body()));
                     }
 

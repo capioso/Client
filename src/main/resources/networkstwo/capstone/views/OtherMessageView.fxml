@@ -13,7 +13,12 @@
          <children>
             <AnchorPane blendMode="SRC_ATOP" maxHeight="15.0" maxWidth="250.0" minHeight="15.0" minWidth="250.0" prefHeight="15.0" prefWidth="250.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Text fx:id="usernameTitle" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Ausernamep" wrappingWidth="213.2392578125" AnchorPane.leftAnchor="17.0" AnchorPane.topAnchor="3.0">
+                  <Text fx:id="usernameTitle" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Ausernamep" wrappingWidth="150.0" AnchorPane.leftAnchor="17.0" AnchorPane.topAnchor="3.0">
+                     <font>
+                        <Font name="Consolas Bold Italic" size="10.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="dateTimeText" fill="WHITE" layoutX="10.0" layoutY="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="hh:mm" textAlignment="RIGHT" wrappingWidth="60.0" AnchorPane.rightAnchor="17.0">
                      <font>
                         <Font name="Consolas Bold Italic" size="10.0" />
                      </font>

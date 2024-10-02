@@ -1,5 +1,6 @@
 package networkstwo.capstone.models;
 
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -7,11 +8,13 @@ public class Message {
     private final UUID id;
     private final String sender;
     private final String binaryContent;
+    private final ZonedDateTime timestamp;
 
-    public Message(UUID id, String sender, String binaryContent) {
+    public Message(UUID id, String sender, String binaryContent, ZonedDateTime timestamp) {
         this.id = id;
         this.sender = sender;
         this.binaryContent = binaryContent;
+        this.timestamp = timestamp;
     }
 
     public UUID getId() {
@@ -24,6 +27,10 @@ public class Message {
 
     public String getBinaryContent() {
         return binaryContent;
+    }
+
+    public ZonedDateTime getTimestamp() {
+        return timestamp;
     }
 
     @Override

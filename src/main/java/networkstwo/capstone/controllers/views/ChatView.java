@@ -24,6 +24,7 @@ import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
 import java.nio.charset.StandardCharsets;
+import java.time.*;
 import java.util.*;
 
 import static networkstwo.capstone.utils.ScreenUtils.showLittleStage;
@@ -75,9 +76,9 @@ public class ChatView {
                             if (!messages.contains(messageToAdd.getId())) {
                                 messages.add(messageToAdd.getId());
                                 if (messageToAdd.getSender().equals(User.getUsername())) {
-                                    addMessageView(true, User.getUsername(), messageToAdd.getBinaryContent());
+                                    addMessageView(true, User.getUsername(), messageToAdd.getBinaryContent(), messageToAdd.getTimestamp());
                                 } else {
-                                    addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent());
+                                    addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent(), messageToAdd.getTimestamp());
                                 }
                             }
                         }
@@ -128,8 +129,9 @@ public class ChatView {
             try {
                 byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
                 String binaryContent = Arrays.toString(bytes);
+                ZonedDateTime messageDate =  ZonedDateTime.now(ZoneId.systemDefault());
 
-                SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent);
+                SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent, messageDate);
                 JsonNode response = MessageSender.getResponse(sendMessage);
 
                 String title = response.get("title").asText();
@@ -138,8 +140,8 @@ public class ChatView {
                 if (title.equals("message")) {
                     UUID messageId = UUID.fromString(body);
                     if (thisChat != null) {
-                        thisChat.getMessages().add(new Message(messageId, User.getUsername(), binaryContent));
-                        addMessageView(true, User.getUsername(), binaryContent);
+                        thisChat.getMessages().add(new Message(messageId, User.getUsername(), binaryContent, messageDate));
+                        addMessageView(true, User.getUsername(), binaryContent, messageDate);
                         textField.setText("");
                     } else {
                         throw new Exception("thisChat is null");
@@ -153,7 +155,7 @@ public class ChatView {
         }
     }
 
-    private void addMessageView(boolean isOwn, String username, String binaryContent) throws Exception {
+    private void addMessageView(boolean isOwn, String username, String binaryContent, ZonedDateTime dateTime) throws Exception {
         String[] byteStrings = binaryContent.substring(1, binaryContent.length() - 1).split(", ");
         byte[] receivedBytes = new byte[byteStrings.length];
 
@@ -174,6 +176,7 @@ public class ChatView {
         MessageView controller = messageView.getController();
         controller.setUsernameTitle(username);
         controller.setMessageBody(decodedContent);
+        controller.setDateTime(dateTime.toString());
         messagesBox.getChildren().add(anchorPane);
     }
 
@@ -186,6 +189,7 @@ public class ChatView {
                 .filter(chat -> chat.getId().equals(this.chatId))
                 .findFirst()
                 .orElse(null);
+
         loadMessages();
     }
 
@@ -201,9 +205,12 @@ public class ChatView {
                     UUID messageId = UUID.fromString(message.path("messageId").asText());
                     String senderTitle = message.path("sender").asText();
                     String content = message.path("content").asText();
+                    String stringTimestamp = message.get("timestamp").asText();
+                    ZonedDateTime timestamp = ZonedDateTime.parse(stringTimestamp);
+
                     try {
-                        thisChat.getMessages().add(new Message(messageId, senderTitle, content));
-                        addMessageView(senderTitle.equals(User.getUsername()), senderTitle, content);
+                        thisChat.getMessages().add(new Message(messageId, senderTitle, content, timestamp));
+                        addMessageView(senderTitle.equals(User.getUsername()), senderTitle, content, timestamp);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
@@ -213,7 +220,7 @@ public class ChatView {
             try {
                 thisChat.getMessages().forEach(message -> {
                     try {
-                        addMessageView(message.getSender().equals(User.getUsername()), message.getSender(), message.getBinaryContent());
+                        addMessageView(message.getSender().equals(User.getUsername()), message.getSender(), message.getBinaryContent(), message.getTimestamp());
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
