@@ -1,22 +1,18 @@
 package networkstwo.capstone.models;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Chat {
     private UUID id;
     private String title;
-
-    private final List<Message> messages = new ArrayList<>();
+    private final Set<Message> messages = new HashSet<>();
 
     public Chat(UUID id, String title) {
         this.id = id;
         this.title = title;
     }
 
-
-    public List<Message> getMessages() {
+    public Set<Message> getMessages() {
         return messages;
     }
 
@@ -34,5 +30,18 @@ public class Chat {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Chat chat = (Chat) o;
+        return Objects.equals(id, chat.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

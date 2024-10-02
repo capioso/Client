@@ -1,20 +1,18 @@
 package networkstwo.capstone.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class User {
     private static String token;
     private static String username;
     private static String email;
-    private static List<Chat> chats = new ArrayList<>();
+    private static final Set<Chat> chats = new HashSet<>();
 
 
-
-    public static List<Chat> getChats() {
+    public static Set<Chat> getChats() {
         return chats;
     }
-
 
     public static String getEmail() {
         return email;

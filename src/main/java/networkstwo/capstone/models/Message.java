@@ -1,5 +1,6 @@
 package networkstwo.capstone.models;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Message {
@@ -23,5 +24,18 @@ public class Message {
 
     public String getBinaryContent() {
         return binaryContent;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return Objects.equals(id, message.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
