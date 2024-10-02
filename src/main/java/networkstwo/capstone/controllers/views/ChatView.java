@@ -49,6 +49,8 @@ public class ChatView {
 
     private Chat thisChat;
 
+    private Set<UUID> messages;
+
     @FXML
     public void initialize() {
         Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 22);
@@ -70,10 +72,13 @@ public class ChatView {
                                 .orElse(null);
 
                         if (messageToAdd != null) {
-                            if (messageToAdd.getSender().equals(User.getUsername())) {
-                                addMessageView(true, User.getUsername(), messageToAdd.getBinaryContent());
-                            } else {
-                                addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent());
+                            if (!messages.contains(messageToAdd.getId())) {
+                                messages.add(messageToAdd.getId());
+                                if (messageToAdd.getSender().equals(User.getUsername())) {
+                                    addMessageView(true, User.getUsername(), messageToAdd.getBinaryContent());
+                                } else {
+                                    addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent());
+                                }
                             }
                         }
                     } catch (Exception e) {
@@ -171,6 +176,7 @@ public class ChatView {
         controller.setMessageBody(decodedContent);
         messagesBox.getChildren().add(anchorPane);
     }
+
 
     public void setData(UUID chatId, String title) {
         this.chatId = chatId;
