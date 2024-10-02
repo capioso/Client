@@ -91,6 +91,7 @@ public class ChatPage {
                         UUID chatId = UUID.fromString(node.get("chatId").asText());
                         String chatTitle = node.get("title").asText();
                         updateTitleById(chatId, chatTitle);
+                        User.getChats().add(new Chat(chatId, chatTitle));
                         reLoadContacts();
                     }catch (Exception e){
                         System.out.println(e.getMessage());
