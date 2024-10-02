@@ -48,8 +48,9 @@ public class ServerConnection {
                 int bytesRead;
 
                 while ((bytesRead = in.read(buffer)) != -1) {
-                    byte[] serverResponseBytes = Arrays.copyOf(buffer, bytesRead);;
+                    byte[] serverResponseBytes = Arrays.copyOf(buffer, bytesRead);
                     JsonNode node = objectMapper.readTree(serverResponseBytes);
+                    System.out.println(node);
                     String title = node.get("title").asText();
                     JsonNode bodyNode = node.path("body");
                     switch (title) {
