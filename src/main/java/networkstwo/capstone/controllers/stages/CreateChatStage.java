@@ -1,12 +1,11 @@
 package networkstwo.capstone.controllers.stages;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import networkstwo.capstone.messages.CreateChat;
 import networkstwo.capstone.models.Operation;
@@ -18,11 +17,7 @@ import java.util.UUID;
 import static networkstwo.capstone.utils.FullValidationUtils.acceptUsername;
 import static networkstwo.capstone.utils.ScreenUtils.showAlert;
 
-public class CreateChatView {
-
-    @FXML
-    private Text textField;
-
+public class CreateChatStage {
     @FXML
     private TextField usernameText;
 
@@ -30,13 +25,13 @@ public class CreateChatView {
 
     @FXML
     public void initialize() throws Exception {
-        textUpdater();
+        Font titleFont = Font.loadFont(getClass().getResourceAsStream("/fonts/RobotoCondensed-MediumItalic.ttf"), 13);
+        usernameText.setFont(titleFont);
     }
 
     @FXML
     void cancelPressed(MouseEvent event) {
-        Stage stage = (Stage) textField.getScene().getWindow();
-        stage.close();
+        closeWindow();
     }
 
     @FXML
@@ -56,20 +51,20 @@ public class CreateChatView {
                 throw new Exception(body);
             }
             this.data = chatId;
-            Stage stage = (Stage) textField.getScene().getWindow();
-            stage.close();
+
+            closeWindow();
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Error", e.getMessage());
-            textField.setText("");
+            usernameText.setText("");
         }
-    }
-
-    private void textUpdater() {
-        ChangeListener<String> textFieldListener = (observable, oldValue, newValue) -> textField.setText(newValue);
-        usernameText.textProperty().addListener(textFieldListener);
     }
 
     public UUID getData() {
         return data;
+    }
+
+    private void closeWindow (){
+        Stage stage = (Stage) usernameText.getScene().getWindow();
+        stage.close();
     }
 }

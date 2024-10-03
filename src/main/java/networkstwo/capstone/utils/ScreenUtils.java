@@ -52,16 +52,16 @@ public class ScreenUtils {
         alert.showAndWait();
     }
 
-    public static void showLittleStage(String title, Scene scene) {
+    public static void showLittleStage(String title, Scene scene, int height) {
         Stage dialogStage = new Stage();
         dialogStage.setTitle(title);
         dialogStage.setScene(scene);
         dialogStage.setMinWidth(300);
         dialogStage.setMaxWidth(300);
         dialogStage.setWidth(300);
-        dialogStage.setMinHeight(160);
-        dialogStage.setMaxHeight(160);
-        dialogStage.setHeight(160);
+        dialogStage.setMinHeight(height);
+        dialogStage.setMaxHeight(height);
+        dialogStage.setHeight(height);
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.showAndWait();
     }

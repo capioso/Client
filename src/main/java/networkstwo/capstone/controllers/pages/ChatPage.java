@@ -13,7 +13,7 @@ import javafx.scene.text.Text;
 import networkstwo.capstone.App;
 import networkstwo.capstone.controllers.views.ChatView;
 import networkstwo.capstone.controllers.views.ContactView;
-import networkstwo.capstone.controllers.stages.CreateChatView;
+import networkstwo.capstone.controllers.stages.CreateChatStage;
 import networkstwo.capstone.messages.GetChats;
 import networkstwo.capstone.messages.GetSingleChat;
 import networkstwo.capstone.models.*;
@@ -186,8 +186,8 @@ public class ChatPage {
 
     private UUID openUsernameView() throws Exception {
         FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("stages/CreateChatStage.fxml"));
-        showLittleStage("Enter Username from user", new Scene(usernameDialog.load()));
-        CreateChatView dialogController = usernameDialog.getController();
+        showLittleStage("Enter Username from user", new Scene(usernameDialog.load()), 100);
+        CreateChatStage dialogController = usernameDialog.getController();
         return dialogController.getData();
     }
 

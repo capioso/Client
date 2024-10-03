@@ -15,10 +15,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import networkstwo.capstone.App;
-import networkstwo.capstone.controllers.stages.CreateGroupView;
-import networkstwo.capstone.messages.CreateChat;
-import networkstwo.capstone.messages.GetMessagesByChat;
-import networkstwo.capstone.messages.SendMessage;
+import networkstwo.capstone.controllers.stages.AddUserToChatStage;
+import networkstwo.capstone.controllers.stages.CreateChatStage;
+import networkstwo.capstone.controllers.stages.CreateGroupStage;
+import networkstwo.capstone.messages.*;
 import networkstwo.capstone.models.*;
 import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
@@ -103,23 +103,44 @@ public class ChatView {
 
     @FXML
     void promoteChatPressed(MouseEvent event) {
-        try {
-            FXMLLoader createViewFxml = new FXMLLoader(App.class.getResource("stages/CreateGroupStage.fxml"));
-            showLittleStage("Enter title from chat & username to add", new Scene(createViewFxml.load()));
+        if (thisChat.isGroup()){
+            try {
+                FXMLLoader createViewFxml = new FXMLLoader(App.class.getResource("stages/AddUserToChatStage.fxml"));
+                showLittleStage("Enter username to add", new Scene(createViewFxml.load()), 160);
 
-            CreateGroupView controller = createViewFxml.getController();
-            String[] dataFromStage = controller.getData();
+                AddUserToChatStage controller = createViewFxml.getController();
+                String dataFromStage = controller.getData();
 
-            CreateChat getMessage = new CreateChat(User.getToken(), Operation.CREATE_CHAT.name(), chatId, dataFromStage[0], dataFromStage[1]);
-            JsonNode response = MessageSender.getResponse(getMessage);
+                AddUserToChat getMessage = new AddUserToChat(User.getToken(), Operation.ADD_USER_TO_CHAT.name(), chatId, dataFromStage);
+                JsonNode response = MessageSender.getResponse(getMessage);
 
-            String responseTitle = response.get("title").asText();
-            if (responseTitle.equals("message")) {
-                titleText.setText(dataFromStage[1]);
+                String responseTitle = response.get("title").asText();
+                if (responseTitle.equals("message")) {
+                   System.out.println(response);
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        }else{
+            try {
+                FXMLLoader createViewFxml = new FXMLLoader(App.class.getResource("stages/CreateGroupStage.fxml"));
+                showLittleStage("Upgrade chat to group", new Scene(createViewFxml.load()), 160);
+
+                CreateGroupStage controller = createViewFxml.getController();
+                String[] dataFromStage = controller.getData();
+
+                PromoteToGroup getMessage = new PromoteToGroup(User.getToken(), Operation.PROMOTE_TO_GROUP.name(), chatId, dataFromStage[0], dataFromStage[1]);
+                JsonNode response = MessageSender.getResponse(getMessage);
+
+                String responseTitle = response.get("title").asText();
+                if (responseTitle.equals("message")) {
+                    titleText.setText(dataFromStage[1]);
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
+
     }
 
     @FXML

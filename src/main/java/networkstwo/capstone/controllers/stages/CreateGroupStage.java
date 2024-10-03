@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import static networkstwo.capstone.utils.FullValidationUtils.acceptTitle;
 import static networkstwo.capstone.utils.FullValidationUtils.acceptUsername;
 
-public class CreateGroupView {
+public class CreateGroupStage {
     @FXML
     private TextField titleText;
 
