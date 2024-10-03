@@ -111,12 +111,15 @@ public class ChatView {
                 AddUserToChatStage controller = createViewFxml.getController();
                 String dataFromStage = controller.getData();
 
-                AddUserToChat getMessage = new AddUserToChat(User.getToken(), Operation.ADD_USER_TO_CHAT.name(), chatId, dataFromStage);
-                JsonNode response = MessageSender.getResponse(getMessage);
+                if (!dataFromStage.isBlank() && !dataFromStage.isEmpty()){
+                    AddUserToChat getMessage = new AddUserToChat(User.getToken(), Operation.ADD_USER_TO_CHAT.name(), chatId, dataFromStage);
+                    JsonNode response = MessageSender.getResponse(getMessage);
 
-                String responseTitle = response.get("title").asText();
-                if (responseTitle.equals("message")) {
-                   System.out.println(response);
+                    String responseTitle = response.get("title").asText();
+                    if (!responseTitle.equals("message")) {
+                        String body = response.get("body").asText();
+                        throw new RuntimeException(body);
+                    }
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
