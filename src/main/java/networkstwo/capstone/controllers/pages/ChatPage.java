@@ -186,7 +186,7 @@ public class ChatPage {
 
     private UUID openUsernameView() throws Exception {
         FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("stages/CreateChatStage.fxml"));
-        showLittleStage("Enter Username from user", new Scene(usernameDialog.load()), 100);
+        showLittleStage("Enter Username from user", new Scene(usernameDialog.load()), 120);
         CreateChatStage dialogController = usernameDialog.getController();
         return dialogController.getData();
     }

@@ -106,7 +106,7 @@ public class ChatView {
         if (thisChat.isGroup()){
             try {
                 FXMLLoader createViewFxml = new FXMLLoader(App.class.getResource("stages/AddUserToChatStage.fxml"));
-                showLittleStage("Enter username to add", new Scene(createViewFxml.load()), 160);
+                showLittleStage("Enter username to add", new Scene(createViewFxml.load()), 120);
 
                 AddUserToChatStage controller = createViewFxml.getController();
                 String dataFromStage = controller.getData();
@@ -129,12 +129,17 @@ public class ChatView {
                 CreateGroupStage controller = createViewFxml.getController();
                 String[] dataFromStage = controller.getData();
 
-                PromoteToGroup getMessage = new PromoteToGroup(User.getToken(), Operation.PROMOTE_TO_GROUP.name(), chatId, dataFromStage[0], dataFromStage[1]);
+                PromoteToGroup getMessage = new PromoteToGroup(User.getToken(), Operation.PROMOTE_TO_GROUP.name(), chatId, dataFromStage[1]);
                 JsonNode response = MessageSender.getResponse(getMessage);
 
                 String responseTitle = response.get("title").asText();
                 if (responseTitle.equals("message")) {
-                    titleText.setText(dataFromStage[1]);
+                    AddUserToChat addMessage = new AddUserToChat(User.getToken(), Operation.ADD_USER_TO_CHAT.name(), chatId, dataFromStage[0]);
+                    JsonNode addResponse = MessageSender.getResponse(addMessage);
+                    responseTitle = addResponse.get("title").asText();
+                    if (responseTitle.equals("message")) {
+                        titleText.setText(dataFromStage[1]);
+                    }
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
