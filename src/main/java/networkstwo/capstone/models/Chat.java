@@ -6,7 +6,7 @@ public class Chat {
     private UUID id;
     private String title;
     private boolean isGroup;
-    private final Set<Message> messages = new HashSet<>();
+    private final Set<Message> messages = new LinkedHashSet<>();
 
     public Chat(UUID id, String title, boolean isGroup) {
         this.id = id;
