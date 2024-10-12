@@ -48,13 +48,14 @@ public class ServerConnection {
                 int bytesRead;
 
                 while ((bytesRead = in.read(buffer)) != -1) {
-                    byte[] serverResponseBytes = Arrays.copyOf(buffer, bytesRead);;
+                    byte[] serverResponseBytes = Arrays.copyOf(buffer, bytesRead);
                     JsonNode node = objectMapper.readTree(serverResponseBytes);
                     String title = node.get("title").asText();
                     JsonNode bodyNode = node.path("body");
                     switch (title) {
                         case "chatUpdate" -> EventBus.getInstance().sendEvent(new Event("chatUpdate", bodyNode));
                         case "messageUpdate" -> EventBus.getInstance().sendEvent(new Event("messageUpdate", bodyNode));
+                        case "groupUpdate" -> EventBus.getInstance().sendEvent(new Event("groupUpdate", bodyNode));
                         default -> responseQueue.offer(node);
                     }
                 }

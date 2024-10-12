@@ -1,7 +1,6 @@
 package networkstwo.capstone.controllers.pages;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,19 +10,21 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import networkstwo.capstone.App;
 import networkstwo.capstone.controllers.views.ChatView;
 import networkstwo.capstone.controllers.views.ContactView;
-import networkstwo.capstone.controllers.views.UsernameView;
+import networkstwo.capstone.controllers.stages.CreateChatStage;
 import networkstwo.capstone.messages.GetChats;
 import networkstwo.capstone.messages.GetSingleChat;
 import networkstwo.capstone.models.*;
 import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
+import java.time.ZonedDateTime;
 import java.util.*;
+
+import static networkstwo.capstone.services.UserServices.updateChatById;
+import static networkstwo.capstone.utils.ScreenUtils.showLittleStage;
 
 public class ChatPage {
     @FXML
@@ -45,21 +46,24 @@ public class ChatPage {
         Font buttonFont = Font.loadFont(getClass().getResourceAsStream("/fonts/Itim-Regular.ttf"), 17);
         usernameLabel.setFont(buttonFont);
         usernameLabel.setText("Hi " + User.getUsername() + "!");
+
         updateUserTitles();
+
         EventBus.getInstance().addListener((observable, oldEvent, newEvent) -> {
             if ("chatUpdate".equals(newEvent.type())) {
                 Platform.runLater(() -> {
                     try {
                         UUID chatId = UUID.fromString(newEvent.body().path("chatId").asText());
                         String chatTitle = newEvent.body().path("title").asText();
-                        User.getChats().add(new Chat(chatId, chatTitle));
+                        boolean isGroup = newEvent.body().path("isGroup").asBoolean();
+                        User.getChats().add(new Chat(chatId, chatTitle, isGroup));
                         addContactView(chatId, chatTitle);
                     } catch (Exception e) {
                         System.out.println("Problems with event bus: " + e.getMessage());
                     }
                 });
             }
-            if ("messageUpdate".equals(newEvent.type())){
+            if ("messageUpdate".equals(newEvent.type())) {
                 try {
                     JsonNode item = newEvent.body();
 
@@ -67,20 +71,38 @@ public class ChatPage {
                     String messageId = item.get("messageId").asText();
                     String username = item.get("usernameSender").asText();
                     String content = item.get("content").asText();
+                    String stringTimestamp = item.get("timestamp").asText();
+                    ZonedDateTime timestamp = ZonedDateTime.parse(stringTimestamp);
 
                     Chat chatFromMessage = User.getChats().stream()
                             .filter(chat -> chat.getId().equals(UUID.fromString(chatId)))
                             .findFirst()
                             .orElse(null);
 
-                    if (chatFromMessage != null){
-                        chatFromMessage.getMessages().add(new Message(UUID.fromString(messageId), username, content));
+                    if (chatFromMessage != null) {
+                        chatFromMessage.getMessages().add(new Message(UUID.fromString(messageId), username, content, timestamp));
                         EventBus.getInstance().sendEvent(new Event("loadMessage", newEvent.body()));
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
+            }
+            if ("groupUpdate".equals(newEvent.type())) {
+                Platform.runLater(() -> {
+                    try {
+                        JsonNode node = newEvent.body();
+                        UUID chatId = UUID.fromString(node.get("chatId").asText());
+                        String chatTitle = node.get("title").asText();
+                        boolean isGroup = newEvent.body().path("isGroup").asBoolean();
+                        updateChatById(chatId, chatTitle, isGroup);
+                        User.getChats().add(new Chat(chatId, chatTitle, isGroup));
+                        reLoadContacts();
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                });
+
             }
         });
     }
@@ -91,13 +113,13 @@ public class ChatPage {
             UUID chatId = openUsernameView();
             if (chatId != null) {
                 String newTitle = getTitleByChatId(chatId.toString());
-                if (newTitle != null){
-                    User.getChats().add(new Chat(chatId, newTitle));
+                if (newTitle != null) {
+                    User.getChats().add(new Chat(chatId, newTitle, false));
                     addContactView(chatId, newTitle);
-                }else{
+                } else {
                     System.out.println("Problem adding chat");
                 }
-            }else{
+            } else {
                 throw new RuntimeException("Chat Id is null");
             }
         } catch (Exception e) {
@@ -105,7 +127,7 @@ public class ChatPage {
         }
     }
 
-    public void updateUserTitles() throws Exception{
+    private void updateUserTitles() throws Exception {
         JsonNode response = MessageSender.getResponse(new GetChats(User.getToken(), Operation.GET_CHATS.name()));
         String title = response.get("title").asText();
 
@@ -114,18 +136,19 @@ public class ChatPage {
             for (JsonNode item : bodyNode) {
                 String chatId = item.path("chatId").asText();
                 String chatTitle = item.path("title").asText();
-                User.getChats().add(new Chat(UUID.fromString(chatId), chatTitle));
+                boolean isGroup = item.path("isGroup").asBoolean();
+                User.getChats().add(new Chat(UUID.fromString(chatId), chatTitle, isGroup));
             }
             reLoadContacts();
         }
     }
 
-    private String getTitleByChatId(String chatId) throws Exception{
+    private String getTitleByChatId(String chatId) throws Exception {
         UUID idConverted = UUID.fromString(chatId);
         JsonNode newResponse = MessageSender.getResponse(
                 new GetSingleChat(User.getToken(), Operation.GET_SINGLE_CHAT.name(), idConverted)
         );
-        if (newResponse.get("title").asText().equals("message")){
+        if (newResponse.get("title").asText().equals("message")) {
             return newResponse.get("body").asText();
         }
         throw new Exception("No chat recovered");
@@ -140,14 +163,6 @@ public class ChatPage {
                 throw new RuntimeException(e.getMessage());
             }
         });
-    }
-
-    private List<String> stringToList(String input) {
-        if (input == null || input.equals("[]")) {
-            return new ArrayList<>();
-        }
-        String cleanInput = input.substring(1, input.length() - 1);
-        return Arrays.asList(cleanInput.split("\\s*,\\s*"));
     }
 
     private void addContactView(UUID chatId, String title) throws Exception {
@@ -170,26 +185,16 @@ public class ChatPage {
     }
 
     private UUID openUsernameView() throws Exception {
-        FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("views/UsernameView.fxml"));
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("Enter Chat's title & Username");
-        dialogStage.setScene(new Scene(usernameDialog.load()));
-        dialogStage.setMinWidth(300);
-        dialogStage.setMaxWidth(300);
-        dialogStage.setWidth(300);
-        dialogStage.setMinHeight(160);
-        dialogStage.setMaxHeight(160);
-        dialogStage.setHeight(160);
-        dialogStage.initModality(Modality.APPLICATION_MODAL);
-        dialogStage.showAndWait();
-        UsernameView dialogController = usernameDialog.getController();
+        FXMLLoader usernameDialog = new FXMLLoader(App.class.getResource("stages/CreateChatStage.fxml"));
+        showLittleStage("Enter Username from user", new Scene(usernameDialog.load()), 120);
+        CreateChatStage dialogController = usernameDialog.getController();
         return dialogController.getData();
     }
 
     @FXML
     void settingsPressed(MouseEvent event) {
         User.getChats().forEach(chat -> {
-            System.out.println(chat.getId() + " | "+ chat.getTitle());
+            System.out.println(chat.getId() + " | " + chat.getTitle());
         });
     }
 }

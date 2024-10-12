@@ -1,8 +1,12 @@
 package networkstwo.capstone.utils;
 
-public class ValidationUtils {
+public class StringValidationUtils {
+    public static boolean isBlank(String str) {
+        return str == null || str.trim().isEmpty();
+    }
+
     public static boolean validateUsername(String username) {
-        if (username == null || username.isEmpty()) {
+        if (isBlank(username)) {
             return false;
         }
         if (username.length() < 4 || username.length() > 16) {
@@ -12,22 +16,32 @@ public class ValidationUtils {
     }
 
     public static boolean validatePassword(String password) {
-        if (password == null || password.isEmpty()) {
+        if (isBlank(password)) {
             return false;
         }
-        if (password.length() < 8 || password.length() > 16) {
+        if (password.length() < 6 || password.length() > 16) {
             return false;
         }
         return password.matches("[a-zA-Z0-9!@#$%^&*]+");
     }
 
     public static boolean validateEmail(String email) {
-        if (email == null || email.isEmpty()) {
+        if (isBlank(email)) {
             return false;
         }
         if (email.length() > 50) {
             return false;
         }
         return email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    public static boolean validateTitle(String title) {
+        if (isBlank(title)) {
+            return false;
+        }
+        if (title.length() < 3 || title.length() > 16) {
+            return false;
+        }
+        return title.matches("[a-zA-Z0-9 ]+");
     }
 }

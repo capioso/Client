@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import networkstwo.capstone.messages.SignInUser;
 import networkstwo.capstone.models.Operation;
 import networkstwo.capstone.services.MessageSender;
-import networkstwo.capstone.utils.ValidationUtils;
+import networkstwo.capstone.utils.StringValidationUtils;
 
 import static networkstwo.capstone.utils.ScreenUtils.changeScreen;
 import static networkstwo.capstone.utils.ScreenUtils.showAlert;
@@ -52,7 +52,7 @@ public class SignInPage {
             String username = usernameBox.getText();
             String password = passwordBox.getText();
             String email = emailBox.getText();
-            if (ValidationUtils.validateUsername(username) && ValidationUtils.validatePassword(password) && ValidationUtils.validateEmail(email)) {
+            if (StringValidationUtils.validateUsername(username) && StringValidationUtils.validatePassword(password) && StringValidationUtils.validateEmail(email)) {
                 SignInUser signInMessage = new SignInUser(Operation.CREATE_USER.name(), username, email, password);
                 JsonNode response = MessageSender.getResponse(signInMessage);
                 String title = response.get("title").asText();

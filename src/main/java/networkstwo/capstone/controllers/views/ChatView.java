@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -14,20 +15,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import networkstwo.capstone.App;
-import networkstwo.capstone.messages.GetMessagesByChat;
-import networkstwo.capstone.messages.SendMessage;
-import networkstwo.capstone.models.Chat;
-import networkstwo.capstone.models.Message;
-import networkstwo.capstone.models.Operation;
-import networkstwo.capstone.models.User;
+import networkstwo.capstone.controllers.stages.AddUserToChatStage;
+import networkstwo.capstone.controllers.stages.CreateChatStage;
+import networkstwo.capstone.controllers.stages.CreateGroupStage;
+import networkstwo.capstone.messages.*;
+import networkstwo.capstone.models.*;
 import networkstwo.capstone.services.EventBus;
 import networkstwo.capstone.services.MessageSender;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.time.*;
+import java.util.*;
+
+import static networkstwo.capstone.utils.ScreenUtils.showLittleStage;
 
 public class ChatView {
 
@@ -50,7 +50,7 @@ public class ChatView {
 
     private Chat thisChat;
 
-    private final List<UUID> messagesIds = new ArrayList<>();
+    private final Set<UUID> messages = new HashSet<>();
 
     @FXML
     public void initialize() {
@@ -72,13 +72,13 @@ public class ChatView {
                                 .findFirst()
                                 .orElse(null);
 
-                        if (messageToAdd != null){
-                            if (!messagesIds.contains(messageToAdd.getId())){
-                                messagesIds.add(messageToAdd.getId());
-                                if (messageToAdd.getSender().equals(User.getUsername())){
-                                    addMessageView(true, User.getUsername(),messageToAdd.getBinaryContent());
-                                }else{
-                                    addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent());
+                        if (messageToAdd != null) {
+                            if (!messages.contains(messageToAdd.getId())) {
+                                messages.add(messageToAdd.getId());
+                                if (messageToAdd.getSender().equals(User.getUsername())) {
+                                    addMessageView(true, User.getUsername(), messageToAdd.getBinaryContent(), messageToAdd.getTimestamp());
+                                } else {
+                                    addMessageView(false, messageToAdd.getSender(), messageToAdd.getBinaryContent(), messageToAdd.getTimestamp());
                                 }
                             }
                         }
@@ -97,14 +97,70 @@ public class ChatView {
     }
 
     @FXML
+    void headerPressed(MouseEvent event) {
+
+    }
+
+    @FXML
+    void promoteChatPressed(MouseEvent event) {
+        if (thisChat.isGroup()){
+            try {
+                FXMLLoader createViewFxml = new FXMLLoader(App.class.getResource("stages/AddUserToChatStage.fxml"));
+                showLittleStage("Enter username to add", new Scene(createViewFxml.load()), 120);
+
+                AddUserToChatStage controller = createViewFxml.getController();
+                String dataFromStage = controller.getData();
+
+                if (!dataFromStage.isBlank() && !dataFromStage.isEmpty()){
+                    AddUserToChat getMessage = new AddUserToChat(User.getToken(), Operation.ADD_USER_TO_CHAT.name(), chatId, dataFromStage);
+                    JsonNode response = MessageSender.getResponse(getMessage);
+
+                    String responseTitle = response.get("title").asText();
+                    if (!responseTitle.equals("message")) {
+                        String body = response.get("body").asText();
+                        throw new RuntimeException(body);
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }else{
+            try {
+                FXMLLoader createViewFxml = new FXMLLoader(App.class.getResource("stages/CreateGroupStage.fxml"));
+                showLittleStage("Upgrade chat to group", new Scene(createViewFxml.load()), 160);
+
+                CreateGroupStage controller = createViewFxml.getController();
+                String[] dataFromStage = controller.getData();
+
+                PromoteToGroup getMessage = new PromoteToGroup(User.getToken(), Operation.PROMOTE_TO_GROUP.name(), chatId, dataFromStage[1]);
+                JsonNode response = MessageSender.getResponse(getMessage);
+
+                String responseTitle = response.get("title").asText();
+                if (responseTitle.equals("message")) {
+                    AddUserToChat addMessage = new AddUserToChat(User.getToken(), Operation.ADD_USER_TO_CHAT.name(), chatId, dataFromStage[0]);
+                    JsonNode addResponse = MessageSender.getResponse(addMessage);
+                    responseTitle = addResponse.get("title").asText();
+                    if (responseTitle.equals("message")) {
+                        titleText.setText(dataFromStage[1]);
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+    }
+
+    @FXML
     void enterPressed(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             String content = textField.getText();
             try {
                 byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
                 String binaryContent = Arrays.toString(bytes);
+                ZonedDateTime messageDate =  ZonedDateTime.now(ZoneId.systemDefault());
 
-                SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent);
+                SendMessage sendMessage = new SendMessage(User.getToken(), Operation.SEND_MESSAGE.name(), chatId, binaryContent, messageDate.toString());
                 JsonNode response = MessageSender.getResponse(sendMessage);
 
                 String title = response.get("title").asText();
@@ -112,14 +168,14 @@ public class ChatView {
 
                 if (title.equals("message")) {
                     UUID messageId = UUID.fromString(body);
-                    if (thisChat != null){
-                        thisChat.getMessages().add(new Message(messageId, User.getUsername(), binaryContent));
-                        addMessageView(true, User.getUsername(), binaryContent);
+                    if (thisChat != null) {
+                        thisChat.getMessages().add(new Message(messageId, User.getUsername(), binaryContent, messageDate));
+                        addMessageView(true, User.getUsername(), binaryContent, messageDate);
                         textField.setText("");
-                    }else{
+                    } else {
                         throw new Exception("thisChat is null");
                     }
-                }else{
+                } else {
                     throw new Exception(body);
                 }
             } catch (Exception e) {
@@ -128,7 +184,7 @@ public class ChatView {
         }
     }
 
-    private void addMessageView(boolean isOwn, String username, String binaryContent) throws Exception {
+    private void addMessageView(boolean isOwn, String username, String binaryContent, ZonedDateTime dateTime) throws Exception {
         String[] byteStrings = binaryContent.substring(1, binaryContent.length() - 1).split(", ");
         byte[] receivedBytes = new byte[byteStrings.length];
 
@@ -149,13 +205,10 @@ public class ChatView {
         MessageView controller = messageView.getController();
         controller.setUsernameTitle(username);
         controller.setMessageBody(decodedContent);
+        controller.setDateTime(dateTime);
         messagesBox.getChildren().add(anchorPane);
     }
 
-    @FXML
-    void headerPressed(MouseEvent event) {
-
-    }
 
     public void setData(UUID chatId, String title) {
         this.chatId = chatId;
@@ -165,40 +218,42 @@ public class ChatView {
                 .filter(chat -> chat.getId().equals(this.chatId))
                 .findFirst()
                 .orElse(null);
+
         loadMessages();
     }
 
     private void loadMessages() {
-        if (thisChat.getMessages().isEmpty()){
+        if (thisChat.getMessages().isEmpty()) {
             GetMessagesByChat getMessage = new GetMessagesByChat(User.getToken(), Operation.GET_MESSAGES_BY_CHAT.name(), chatId);
             JsonNode response = MessageSender.getResponse(getMessage);
 
             if (response.get("title").asText().equals("message")) {
                 JsonNode body = response.get("body");
                 for (JsonNode message : body) {
-                    System.out.println(message);
                     UUID messageId = UUID.fromString(message.path("messageId").asText());
                     String senderTitle = message.path("sender").asText();
                     String content = message.path("content").asText();
+                    String stringTimestamp = message.get("timestamp").asText();
+                    ZonedDateTime timestamp = ZonedDateTime.parse(stringTimestamp);
+
                     try {
-                        thisChat.getMessages().add(new Message(messageId, senderTitle, content));
-                        addMessageView(senderTitle.equals(User.getUsername()), senderTitle,content);
-                    }catch (Exception e){
+                        thisChat.getMessages().add(new Message(messageId, senderTitle, content, timestamp));
+                        addMessageView(senderTitle.equals(User.getUsername()), senderTitle, content, timestamp);
+                    } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                 }
             }
-        }else {
+        } else {
             try {
                 thisChat.getMessages().forEach(message -> {
                     try {
-                        addMessageView(message.getSender().equals(User.getUsername()), message.getSender(),message.getBinaryContent());
+                        addMessageView(message.getSender().equals(User.getUsername()), message.getSender(), message.getBinaryContent(), message.getTimestamp());
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                 });
-
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
