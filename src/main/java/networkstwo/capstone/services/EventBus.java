@@ -2,7 +2,7 @@ package networkstwo.capstone.services;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import networkstwo.capstone.models.Event;
+import networkstwo.capstone.domain.models.Event;
 
 public class EventBus {
     private static final EventBus instance = new EventBus();

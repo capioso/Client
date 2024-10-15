@@ -9,17 +9,17 @@ module networkstwo.capstone {
     opens networkstwo.capstone to javafx.fxml;
     exports networkstwo.capstone;
     exports networkstwo.capstone.utils;
-    exports networkstwo.capstone.messages;
+    exports networkstwo.capstone.domain.messages;
     exports networkstwo.capstone.services;
     exports networkstwo.capstone.config;
-    exports networkstwo.capstone.models;
+    exports networkstwo.capstone.domain.models;
 
 
-    exports networkstwo.capstone.controllers.pages;
-    opens networkstwo.capstone.controllers.pages to javafx.fxml;
-    exports networkstwo.capstone.controllers.views;
-    opens networkstwo.capstone.controllers.views to javafx.fxml;
-    exports networkstwo.capstone.controllers.stages;
-    opens networkstwo.capstone.controllers.stages to javafx.fxml;
+    exports networkstwo.capstone.application.pages;
+    opens networkstwo.capstone.application.pages to javafx.fxml;
+    exports networkstwo.capstone.application.views;
+    opens networkstwo.capstone.application.views to javafx.fxml;
+    exports networkstwo.capstone.application.stages;
+    opens networkstwo.capstone.application.stages to javafx.fxml;
 
 }

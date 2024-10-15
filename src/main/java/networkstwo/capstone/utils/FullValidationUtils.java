@@ -1,6 +1,6 @@
 package networkstwo.capstone.utils;
 
-import networkstwo.capstone.models.User;
+import networkstwo.capstone.domain.models.User;
 
 import java.util.List;
 

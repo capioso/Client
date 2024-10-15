@@ -2,9 +2,8 @@ package networkstwo.capstone.config;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import networkstwo.capstone.models.Message;
 import org.msgpack.jackson.dataformat.MessagePackFactory;
-import networkstwo.capstone.models.Event;
+import networkstwo.capstone.domain.models.Event;
 import networkstwo.capstone.services.EventBus;
 
 import javax.net.ssl.SSLSocket;
