@@ -1,6 +1,21 @@
 # Client Application
 
 # 1. Architecture
+> This structure reflects a combination of two common software design patterns:
+
+## 1.1. Layered Architecture:
+
+> * Responsibilities are divided into config, service, controller, and domain layers.
+> * Each layer has clearly defined roles:
+> * * Controller: Manages interaction between views and services.
+> * * Service: Handles business logic and communication with remote systems.
+> * * Domain: Defines core data models and operations.
+
+## 1.2. MVC (Model-View-Controller):
+
+> * Views represent the UI elements.
+> * Controllers act as intermediaries between the UI and logic.
+> * Models in the domain layer represent the state and behavior of the application.
 
 # 2. Before running
 ## 2.1. TLS security
