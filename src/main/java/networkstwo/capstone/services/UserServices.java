@@ -1,7 +1,7 @@
 package networkstwo.capstone.services;
 
-import networkstwo.capstone.models.Chat;
-import networkstwo.capstone.models.User;
+import networkstwo.capstone.domain.models.Chat;
+import networkstwo.capstone.domain.models.User;
 
 import java.util.List;
 import java.util.Objects;
