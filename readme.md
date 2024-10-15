@@ -84,3 +84,8 @@ KEYSTORE_PASS=
 > * Otherwise, the result is the following:
 
 ![](documentation/badConnection.png)
+
+> * Watch the video demo: [video.mp4](documentation/demo.mp4)
+> * Check the github repo: [Client](https://github.com/capioso/Client)
+> * Check the code: [code.zip](documentation/code.zip)
+
